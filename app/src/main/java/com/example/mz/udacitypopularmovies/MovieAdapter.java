@@ -35,28 +35,37 @@ public class MovieAdapter extends ArrayAdapter<MovieEntry> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         MovieEntry entry = getItem(position);
-        Context context = getContext();
+        Context context = parent.getContext();
 
         View rootView = LayoutInflater.from(context).inflate(R.layout.thumb_with_caption, parent, false);
 
 
-        ImageView iconView = (ImageView) rootView.findViewById(R.id.iv_thumbnail);
-        Uri builtUri = NetworkUtils.buildPosterRequest(new Integer(185), entry.posterPath);
-        Picasso.with(context).load(builtUri).fit().into(iconView);
-        TextView titleView = (TextView) rootView.findViewById(R.id.tv_title);
+        final ImageView iconView = (ImageView) rootView.findViewById(R.id.iv_thumbnail);
+        Uri poster = NetworkUtils.buildPosterRequest(new Integer(185), entry.posterPath);
+        final TextView titleView = (TextView) rootView.findViewById(R.id.tv_title);
         titleView.setText(entry.title);
+        Picasso picasso = new Picasso.Builder(context)
+                .listener(new Picasso.Listener() {
+                    @Override
+                    public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
+                        //Here your log
+                        exception.printStackTrace();
+                    }
+                })
+                .build();
+            Log.e(LOG_TAG, "THIS: \"" + poster.toString() + "\"");
+            picasso.load(poster).into(iconView );
         return rootView;
     }
 
     public void setMovieData(MovieEntry[] movieData) {
-        Log.i(LOG_TAG, "before setMovieData there is " +  getCount() + " elements in a view");
+        Log.i(LOG_TAG, "before setMovieData there is " + getCount() + " elements in a view");
         if (movieData == null) {
             clear();
-        }
-        else {
+        } else {
             addAll(Arrays.asList(movieData));
         }
-        Log.i(LOG_TAG, "after setMovieData there is " +  getCount() + " elements in a view");
+        Log.i(LOG_TAG, "after setMovieData there is " + getCount() + " elements in a view");
     }
 
 }

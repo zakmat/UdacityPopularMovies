@@ -18,12 +18,11 @@ public final class NetworkUtils {
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
     private static final String DBMOVIE_IMAGE_BASE_URL =
-            " https://image.tmdb.org/t/p/";
+            "http://image.tmdb.org/t/p/";
     private static final String DBMOVIE_BASE_URL =
-            " https://api.themoviedb.org/3/movie/";
+            "https://api.themoviedb.org/3/movie/";
 
     /* The format we want our API to return */
-//    private static final String size = "w145";
     private static final String APIKEY_PARAM =  "api_key";
     private static final String LANGUAGE_PARAM = "language";
     private static final String PAGE_PARAM = "page";
