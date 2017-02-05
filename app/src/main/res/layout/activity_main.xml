@@ -9,7 +9,8 @@
         android:id="@+id/gv_posters"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="auto_fit"/>
+        android:stretchMode="columnWidth"
+        android:numColumns="2"/>
 
     <ProgressBar
         android:id="@+id/pb_loading_indicator"
