@@ -1,4 +1,10 @@
 <resources>
-    <string name="app_name">UdacityPopularMovies</string>
+    <string name="app_name">Pop Movies</string>
     <string name="refresh">Refresh!</string>
+    <string name="popular">Popular</string>
+    <string name="top_rated">Top rated</string>
+    <string-array name="queries">
+        <item>@string/popular</item>
+        <item>@string/top_rated</item>
+    </string-array>
 </resources>

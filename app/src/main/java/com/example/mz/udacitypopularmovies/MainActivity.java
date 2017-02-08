@@ -7,13 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.Spinner;
 
 import com.example.mz.udacitypopularmovies.data.MovieEntry;
 import com.example.mz.udacitypopularmovies.utilities.JsonUtils;
@@ -26,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private ProgressBar mLoadingIndicator;
+    private Toolbar mToolbar;
+    private Spinner mSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +42,39 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setLayoutManager(gridLayout);
         mRecyclerView.setAdapter(mMovieAdapter);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        mToolbar.setTitle(R.string.app_name);
+        mSpinner = (Spinner) findViewById(R.id.spinner);
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = parent.getSelectedItem().toString();
+                Log.v("SPINNER", parent.getItemAtPosition(position).toString());
+                if (selectedItem.equals(getResources().getString(R.string.popular)))
+                {
+                   loadMoviesData("popular");
+                }
+                else if (selectedItem.equals(getResources().getString(R.string.top_rated))) {
+                    loadMoviesData("top_rated");
+                }
+                else {
+                    Log.e("SPINNER", "Not recognized item selected");
+                }
 
-        loadMoviesData();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        loadMoviesData("popular");
     }
 
-    private void loadMoviesData() {
-        new FetchMoviesTask().execute("popular");
+    private void loadMoviesData(String queryType) {
+        new FetchMoviesTask().execute(queryType);
     }
 
     @Override
@@ -72,7 +103,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             if (params.length == 0) {
                 return null;
             }
-
+            String page;
+            if (params.length == 1) {
+                page = "1";
+            } else {
+                page = params[1];
+            }
             String queryType = params[0];
             URL movieRequestUrl = NetworkUtils.buildMovieRequest(queryType);
 
@@ -102,28 +138,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        /* Use AppCompatActivity's method getMenuInflater to get a handle on the menu inflater */
-        MenuInflater inflater = getMenuInflater();
-        /* Use the inflater's inflate method to inflate our menu layout to this menu */
-        inflater.inflate(R.menu.main, menu);
-        /* Return true so that the menu is displayed in the Toolbar */
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_refresh) {
-            mMovieAdapter.setMovieData(null);
-            loadMoviesData();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
 
 }

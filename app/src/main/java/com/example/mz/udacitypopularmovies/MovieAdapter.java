@@ -35,6 +35,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
     public void setMovieData(MovieEntry[] movieData) {
         Log.i(LOG_TAG, "before setMovieData there is " + getItemCount() + " elements in a view");
         if (movieData == null) {
+            mMovieEntries = null;
         } else {
             mMovieEntries = movieData;
         }
