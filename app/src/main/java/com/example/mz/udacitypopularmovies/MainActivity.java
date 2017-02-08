@@ -10,8 +10,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -20,7 +18,6 @@ import com.example.mz.udacitypopularmovies.utilities.JsonUtils;
 import com.example.mz.udacitypopularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
@@ -62,11 +59,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             mLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
-        // COMPLETED (6) Override the doInBackground method to perform your network requests
         @Override
         protected MovieEntry[] doInBackground(String... params) {
 
-            /* If there's no zip code, there's nothing to look up. */
             if (params.length == 0) {
                 return null;
             }
@@ -91,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             }
         }
 
-        // COMPLETED (7) Override the onPostExecute method to display the results of the network request
         @Override
         protected void onPostExecute(MovieEntry[] movieData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
