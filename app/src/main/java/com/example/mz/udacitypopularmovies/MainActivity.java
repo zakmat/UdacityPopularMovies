@@ -1,5 +1,7 @@
 package com.example.mz.udacitypopularmovies;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -46,8 +48,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     @Override
     public void OnClick(MovieEntry entry) {
-        Toast.makeText(MainActivity.this, "This will move to the details screen of movie: " + entry.title,
-                Toast.LENGTH_SHORT).show();
+//        Toast.makeText(MainActivity.this, "This will move to the details screen of movie: " + entry.title,
+//                Toast.LENGTH_SHORT).show();
+        Context context = MainActivity.this;
+        Class destinationClass = DetailActivity.class;
+        Intent intent = new Intent(context, destinationClass);
+        intent.putExtra(MovieEntry.class.getSimpleName(), entry);
+        startActivity(intent);
     }
 
     public class FetchMoviesTask extends AsyncTask<String, Void, MovieEntry[]> {

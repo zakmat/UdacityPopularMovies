@@ -10,7 +10,6 @@
         android:adjustViewBounds="true"
         />
 
-
     <TextView
         android:text="Title"
         android:id="@+id/tv_title"
