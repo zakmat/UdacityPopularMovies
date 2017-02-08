@@ -5,12 +5,11 @@
     android:layout_height="match_parent"
     tools:context="com.example.mz.udacitypopularmovies.MainActivity">
 
-    <GridView
-        android:id="@+id/gv_posters"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_posters"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:stretchMode="columnWidth"
-        android:numColumns="2"/>
+        />
 
     <ProgressBar
         android:id="@+id/pb_loading_indicator"

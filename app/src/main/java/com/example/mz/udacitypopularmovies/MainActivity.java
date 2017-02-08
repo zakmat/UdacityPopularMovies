@@ -3,6 +3,8 @@ package com.example.mz.udacitypopularmovies;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,8 +22,9 @@ import com.example.mz.udacitypopularmovies.utilities.NetworkUtils;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
+    private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private ProgressBar mLoadingIndicator;
 
@@ -30,23 +33,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mMovieAdapter = new MovieAdapter(MainActivity.this, new ArrayList<MovieEntry>());
-        GridView gridview = (GridView) findViewById(R.id.gv_posters);
-        gridview.setAdapter(mMovieAdapter);
-
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                Toast.makeText(MainActivity.this, "This will move to the details screen " + position,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        mMovieAdapter = new MovieAdapter(MainActivity.this);
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_posters);
+        GridLayoutManager gridLayout = new GridLayoutManager(this, 2);
+        mRecyclerView.setLayoutManager(gridLayout);
+        mRecyclerView.setAdapter(mMovieAdapter);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
+        loadMoviesData();
     }
 
     private void loadMoviesData() {
         new FetchMoviesTask().execute("popular");
+    }
+
+    @Override
+    public void OnClick(MovieEntry entry) {
+        Toast.makeText(MainActivity.this, "This will move to the details screen of movie: " + entry.title,
+                Toast.LENGTH_SHORT).show();
     }
 
     public class FetchMoviesTask extends AsyncTask<String, Void, MovieEntry[]> {
