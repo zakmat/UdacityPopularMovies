@@ -101,7 +101,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
                     })
                     .build();
             Log.i(LOG_TAG, "bind movie: \"" + entry.title + "\"");
-            picasso.load(poster).into(posterImageView);
+            picasso.with(context).load(poster).into(posterImageView);
         }
 
         @Override
