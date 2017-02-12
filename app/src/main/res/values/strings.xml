@@ -8,6 +8,7 @@
     <string name="placeholder_release_date">Feb 11, 2017</string>
     <string name="placeholder_plot_synopsis">Plot synopsis</string>
     <string name="placeholder_movie_poster">Poster of the movie</string>
+    <string name="fetch_error_message">Something went wrong. Please check your Internet connection and try again.</string>
     <string-array name="queries">
         <item>@string/popular</item>
         <item>@string/top_rated</item>

@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.mz.udacitypopularmovies.data.MovieEntry;
 import com.example.mz.udacitypopularmovies.utilities.JsonUtils;
@@ -132,6 +133,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieData != null) {
                 mMovieAdapter.setMovieData(movieData);
+            }
+            else {
+                Toast.makeText(getApplicationContext(), R.string.fetch_error_message, Toast.LENGTH_LONG).show();
             }
         }
     }
