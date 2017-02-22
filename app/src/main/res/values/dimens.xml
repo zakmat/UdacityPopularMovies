@@ -4,4 +4,6 @@
     <dimen name="release_date_text_size">20sp</dimen>
     <dimen name="vote_average_text_size">24sp</dimen>
     <dimen name="plot_synopsis_text_size">20sp</dimen>
+    <dimen name="reviews_text_size">20sp</dimen>
+    <dimen name="reviews_header_text_size">24sp</dimen>
 </resources>
