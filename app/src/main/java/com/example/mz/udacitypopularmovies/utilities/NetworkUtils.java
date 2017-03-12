@@ -50,11 +50,11 @@ public final class NetworkUtils {
      * @param queryType The queryType that will be queried for - possible values are "popular"
      * @return The URL to use to query the weather server.
      */
-    public static URL buildMovieRequest(String queryType) {
+    public static URL buildMovieRequest(String queryType, String page) {
         Uri builtUri = Uri.parse(DBMOVIE_BASE_URL).buildUpon().appendPath(queryType)
                 .appendQueryParameter(APIKEY_PARAM, apiKey)
                 .appendQueryParameter(LANGUAGE_PARAM, language)
-                .appendQueryParameter(PAGE_PARAM, Integer.valueOf(page).toString())
+                .appendQueryParameter(PAGE_PARAM, page)
                 .build();
 
         return buildUrlFromURI(builtUri);

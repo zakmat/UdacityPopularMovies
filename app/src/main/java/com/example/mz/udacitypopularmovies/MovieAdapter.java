@@ -14,6 +14,9 @@ import com.example.mz.udacitypopularmovies.data.MovieEntry;
 import com.example.mz.udacitypopularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by mz on 2017-02-04.
  */
@@ -21,7 +24,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
 
     private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
 
-    private MovieEntry mMovieEntries[];
+    private ArrayList<MovieEntry> mMovieEntries;
     private final MovieAdapterOnClickHandler mClickHandler;
 
     public interface MovieAdapterOnClickHandler {
@@ -36,8 +39,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
         Log.i(LOG_TAG, "before setMovieData there is " + getItemCount() + " elements in a view");
         if (movieData == null) {
             mMovieEntries = null;
-        } else {
-            mMovieEntries = movieData;
+        } else if (mMovieEntries == null){
+            mMovieEntries = new ArrayList<MovieEntry>(Arrays.asList(movieData));
+        }
+        else {
+           mMovieEntries.addAll(Arrays.asList(movieData));
         }
         notifyDataSetChanged();
         Log.i(LOG_TAG, "after setMovieData there is " + getItemCount() + " elements in a view");
@@ -64,7 +70,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
         if (mMovieEntries == null) {
             return 0;
         } else {
-            return mMovieEntries.length;
+            return mMovieEntries.size();
         }
     }
 
@@ -87,7 +93,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
                 Log.d(LOG_TAG, "Called bind with null mMovieEntries");
                 return;
             }
-            MovieEntry entry = mMovieEntries[position];
+            MovieEntry entry = mMovieEntries.get(position);
             Uri poster = NetworkUtils.buildPosterRequest(new Integer(185), entry.posterPath);
             movieTitleTextView.setText(entry.title);
             Context context = super.itemView.getContext();
@@ -108,7 +114,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             Log.e(LOG_TAG, "Clicked on position : "+ adapterPosition);
-            mClickHandler.OnClick(mMovieEntries[adapterPosition]);
+            mClickHandler.OnClick(mMovieEntries.get(adapterPosition));
         }
     }
 }

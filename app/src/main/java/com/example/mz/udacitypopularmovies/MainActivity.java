@@ -52,10 +52,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 Log.v("SPINNER", parent.getItemAtPosition(position).toString());
                 if (selectedItem.equals(getResources().getString(R.string.popular)))
                 {
-                   loadMoviesData("popular");
+                   loadMoviesData("popular", "1");
                 }
                 else if (selectedItem.equals(getResources().getString(R.string.top_rated))) {
-                    loadMoviesData("top_rated");
+                    loadMoviesData("top_rated", "1");
                 }
                 else {
                     Log.e("SPINNER", "Not recognized item selected");
@@ -69,11 +69,35 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             }
         });
 
-        loadMoviesData("popular");
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                if(dy > 0) //check for scroll down
+                {
+                    int visibleItemCount = mRecyclerView.getLayoutManager().getChildCount();
+                    int totalItemCount = mRecyclerView.getLayoutManager().getItemCount();
+                    int firstVisibleItem = ((GridLayoutManager)mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+
+                    Log.v("...", "Total item count " + totalItemCount + " " + visibleItemCount);
+                    if (mLoadingIndicator.getVisibility() == View.INVISIBLE && (visibleItemCount + firstVisibleItem) >= totalItemCount )
+                    {
+                            //Do pagination.. i.e. fetch new data
+                            String nextPage = String.valueOf(totalItemCount / 20 + 1);
+                            Log.v(">>>", "Getting page number: " + nextPage);
+                            loadMoviesData("popular", nextPage);
+
+                    }
+                }
+            }
+        });
+
+        loadMoviesData("popular", "1");
     }
 
-    private void loadMoviesData(String queryType) {
-        new FetchMoviesTask().execute(queryType);
+    private void loadMoviesData(String queryType, String page) {
+        new FetchMoviesTask().execute(queryType, page);
     }
 
     @Override
@@ -109,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 page = params[1];
             }
             String queryType = params[0];
-            URL movieRequestUrl = NetworkUtils.buildMovieRequest(queryType);
+            URL movieRequestUrl = NetworkUtils.buildMovieRequest(queryType, page);
 
             try {
                 String jsonMovieResponse = NetworkUtils
