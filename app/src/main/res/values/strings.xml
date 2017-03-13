@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">Pop Movies</string>
     <string name="refresh">Refresh!</string>
-    <string name="popular">Popular</string>
-    <string name="top_rated">Top rated</string>
+    <string name="popular_value">Popular</string>
+    <string name="top_rated_value">Top rated</string>
+    <string name="popular_label">popular</string>
+    <string name="top_rated_label">top_rated</string>
     <string name="placeholder_movie_title">Movie Title</string>
     <string name="placeholder_vote_average">TMDb: 10.0/10</string>
     <string name="placeholder_release_date">Feb 11, 2017</string>
@@ -14,7 +16,7 @@
     <string name="placeholder_review_author">John Smith</string>
     <string name="reviews_label">Reviews</string>
     <string-array name="queries">
-        <item>@string/popular</item>
-        <item>@string/top_rated</item>
+        <item>@string/popular_value</item>
+        <item>@string/top_rated_value</item>
     </string-array>
 </resources>

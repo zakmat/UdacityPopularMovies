@@ -50,14 +50,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItem = parent.getSelectedItem().toString();
                 Log.v("SPINNER", parent.getItemAtPosition(position).toString());
-                if (selectedItem.equals(getResources().getString(R.string.popular)))
-                {
-                   loadMoviesData("popular", "1");
-                }
-                else if (selectedItem.equals(getResources().getString(R.string.top_rated))) {
-                    loadMoviesData("top_rated", "1");
-                }
-                else {
+                if (selectedItem.equals(getResources().getString(R.string.popular_value))) {
+                    loadMoviesData(getResources().getString(R.string.popular_label), "1");
+                } else if (selectedItem.equals(getResources().getString(R.string.top_rated_value))) {
+                    loadMoviesData(getResources().getString(R.string.top_rated_label), "1");
+                } else {
                     Log.e("SPINNER", "Not recognized item selected");
                 }
 
@@ -69,31 +66,34 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             }
         });
 
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-                if(dy > 0) //check for scroll down
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) //check for scroll down
                 {
                     int visibleItemCount = mRecyclerView.getLayoutManager().getChildCount();
                     int totalItemCount = mRecyclerView.getLayoutManager().getItemCount();
-                    int firstVisibleItem = ((GridLayoutManager)mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+                    int firstVisibleItem = ((GridLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
 
                     Log.v("...", "Total item count " + totalItemCount + " " + visibleItemCount);
-                    if (mLoadingIndicator.getVisibility() == View.INVISIBLE && (visibleItemCount + firstVisibleItem) >= totalItemCount )
-                    {
-                            //Do pagination.. i.e. fetch new data
-                            String nextPage = String.valueOf(totalItemCount / 20 + 1);
-                            Log.v(">>>", "Getting page number: " + nextPage);
-                            loadMoviesData("popular", nextPage);
+                    if (mLoadingIndicator.getVisibility() == View.INVISIBLE && (visibleItemCount + firstVisibleItem) >= totalItemCount) {
+                        //Do pagination.. i.e. fetch new data
+                        String nextPage = String.valueOf(totalItemCount / 20 + 1);
+                        Log.v(">>>", "Getting page number: " + nextPage);
+
+                        String selectedValue = mSpinner.getSelectedItem().toString();
+                        if (selectedValue.equals(getResources().getString(R.string.popular_value))) {
+                            loadMoviesData(getResources().getString(R.string.popular_label), nextPage);
+                        } else if (selectedValue.equals(getResources().getString(R.string.top_rated_value))) {
+                            loadMoviesData(getResources().getString(R.string.top_rated_label), nextPage);
+                        }
 
                     }
                 }
             }
         });
 
-        loadMoviesData("popular", "1");
+        loadMoviesData(getResources().getString(R.string.popular_label), "1");
     }
 
     private void loadMoviesData(String queryType, String page) {
@@ -157,13 +157,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieData != null) {
                 mMovieAdapter.setMovieData(movieData);
-            }
-            else {
+            } else {
                 Toast.makeText(getApplicationContext(), R.string.fetch_error_message, Toast.LENGTH_LONG).show();
             }
         }
     }
-
 
 
 }
