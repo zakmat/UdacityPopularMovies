@@ -1,6 +1,5 @@
 package com.example.mz.udacitypopularmovies.data;
 
-import android.graphics.Movie;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -29,7 +28,7 @@ public class MovieEntry implements Parcelable {
         this.voteAverage = voteAverage;
     }
 
-    public MovieEntry(Parcel in) {
+    private MovieEntry(Parcel in) {
         this.movie_id = in.readInt();
         this.title = in.readString();
         this.overview = in.readString();

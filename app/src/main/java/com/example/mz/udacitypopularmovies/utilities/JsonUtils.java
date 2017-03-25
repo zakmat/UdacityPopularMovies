@@ -26,19 +26,19 @@ import java.util.Date;
  * Utility functions to handle themovieDB JSON data.
  */
 public final class JsonUtils {
-    private static final String TAG = JsonUtils.class.getSimpleName().toString();
+    private static final String TAG = JsonUtils.class.getSimpleName();
 
-    static final String POSTER = "poster_path";
-    static final String MOVIE_ID = "id";
-    static final String TITLE = "title";
-    static final String OVERVIEW = "overview";
-    static final String RELEASE_DATE = "release_date";
-    static final String RATING = "vote_average";
-    static final String AUTHOR = "author";
-    static final String CONTENT = "content";
+    private static final String POSTER = "poster_path";
+    private static final String MOVIE_ID = "id";
+    private static final String TITLE = "title";
+    private static final String OVERVIEW = "overview";
+    private static final String RELEASE_DATE = "release_date";
+    private static final String RATING = "vote_average";
+    private static final String AUTHOR = "author";
+    private static final String CONTENT = "content";
 
-    static final String STATUS_CODE = "status_code";
-    static final String RESULTS = "results";
+    private static final String STATUS_CODE = "status_code";
+    private static final String RESULTS = "results";
     private static final String NAME = "name";
     private static final String KEY = "key";
     private static final String SITE = "site";
@@ -102,7 +102,8 @@ public final class JsonUtils {
             double votesAverage = movie.getDouble(RATING);
 
             parsedMoviesData[i] = new MovieEntry(movie_id, title, overview, poster, releaseDate, votesAverage);
-            Log.i(TAG, title + " " + releaseDate.toString() + " " + poster);
+            String relDateString = releaseDate != null ? releaseDate.toString() : "????-??-??";
+            Log.i(TAG, title + " " + relDateString + " " + poster);
         }
 
         return parsedMoviesData;
@@ -174,13 +175,13 @@ public final class JsonUtils {
         switch (errorCode) {
             case HttpURLConnection.HTTP_UNAUTHORIZED:
                 Log.e(TAG, "Not authorized to use API. Probably api_key missing or invalid");
-                return;
+                break;
             case HttpURLConnection.HTTP_NOT_FOUND:
                 Log.e(TAG, "HTTP not found. Check code for typos or errors");
-                return;
+                break;
             default:
                 Log.e(TAG, "HTTP error: " + errorCode);
-                return;
+                break;
         }
     }
 }

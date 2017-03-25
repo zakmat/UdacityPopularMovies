@@ -23,6 +23,7 @@ import java.util.Arrays;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryViewHolder> {
 
     private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
+    private final static Integer MEDIUM_SIZE = 185;
 
     private ArrayList<MovieEntry> mMovieEntries;
     private final MovieAdapterOnClickHandler mClickHandler;
@@ -40,7 +41,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
         if (movieData == null) {
             mMovieEntries = null;
         } else if (mMovieEntries == null){
-            mMovieEntries = new ArrayList<MovieEntry>(Arrays.asList(movieData));
+            mMovieEntries = new ArrayList<>(Arrays.asList(movieData));
         }
         else {
            mMovieEntries.addAll(Arrays.asList(movieData));
@@ -54,10 +55,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
         Context context = parent.getContext();
         int layoutIdForGridItem = R.layout.thumb_with_caption;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
+        final boolean shouldAttachToParentImmediately = false;
         View view = inflater.inflate(layoutIdForGridItem, parent, shouldAttachToParentImmediately);
-        MovieEntryViewHolder viewHolder = new MovieEntryViewHolder(view);
-        return viewHolder;
+        return new MovieEntryViewHolder(view);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
                 return;
             }
             MovieEntry entry = mMovieEntries.get(position);
-            Uri poster = NetworkUtils.buildPosterRequest(new Integer(185), entry.posterPath);
+            Uri poster = NetworkUtils.buildPosterRequest(MEDIUM_SIZE, entry.posterPath);
             movieTitleTextView.setText(entry.title);
             Context context = super.itemView.getContext();
             Picasso picasso = new Picasso.Builder(context)

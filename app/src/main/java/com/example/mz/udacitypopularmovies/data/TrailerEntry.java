@@ -9,13 +9,13 @@ import android.os.Parcelable;
 
 public class TrailerEntry implements Parcelable {
 
-    public String trailer_id;
+    private String trailer_id;
     public String name;
-    public String key;
-    public String site;
+    private String key;
+    private String site;
 
 
-    public TrailerEntry(Parcel in) {
+    private TrailerEntry(Parcel in) {
         this.trailer_id = in.readString();
         this.name = in.readString();
         this.key = in.readString();

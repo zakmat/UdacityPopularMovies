@@ -14,7 +14,7 @@ public class ReviewEntry implements Parcelable {
     public String content;
 
 
-    public ReviewEntry(Parcel in) {
+    private ReviewEntry(Parcel in) {
         this.review_id = in.readString();
         this.author = in.readString();
         this.content = in.readString();

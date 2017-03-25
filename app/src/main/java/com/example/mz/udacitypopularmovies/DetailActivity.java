@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -48,12 +47,12 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        ArrayList<ReviewEntry> reviews = new ArrayList<ReviewEntry>();
+        ArrayList<ReviewEntry> reviews = new ArrayList<>();
         mReviewAdapter = new ReviewsAdapter(DetailActivity.this, reviews);
         ListView listView = (ListView) findViewById(R.id.lv_reviews);
         listView.setAdapter(mReviewAdapter);
 
-        ArrayList<TrailerEntry> trailers = new ArrayList<TrailerEntry>();
+        ArrayList<TrailerEntry> trailers = new ArrayList<>();
         mTrailerAdapter = new TrailersAdapter(DetailActivity.this, trailers);
         ListView trailer_listView = (ListView) findViewById(R.id.lv_videos);
         trailer_listView.setAdapter(mTrailerAdapter);
@@ -74,7 +73,7 @@ public class DetailActivity extends AppCompatActivity {
             mVoteAverageTextView.setText("TMDb: "+ Double.valueOf(incomingEntry.voteAverage).toString() + "/10");
             mPlotSynopsisTextView.setText(incomingEntry.overview);
             moviePoster = incomingEntry.posterPath;
-            Uri poster = NetworkUtils.buildPosterRequest(new Integer(342), incomingEntry.posterPath);
+            Uri poster = NetworkUtils.buildPosterRequest(Integer.valueOf(342), incomingEntry.posterPath);
             Picasso.with(context).load(poster).into(mImageView);
             loadReviewsData();
             loadTrailersData();
@@ -231,7 +230,7 @@ public class DetailActivity extends AppCompatActivity {
             // Lookup view for data population
             //TODO: put some static image as a trailer icon
             if (moviePoster != null) {
-                Uri poster = NetworkUtils.buildPosterRequest(new Integer(342), moviePoster);
+                Uri poster = NetworkUtils.buildPosterRequest(Integer.valueOf(342), moviePoster);
                 Context context = parent.getContext();
                 Picasso.with(context).load(poster).into(mImageView);
             }
