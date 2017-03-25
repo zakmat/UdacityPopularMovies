@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -8,60 +9,60 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/activity_detail"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context="com.example.mz.udacitypopularmovies.DetailActivity">
+
+        <TextView
+            android:id="@+id/movie_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:context="com.example.mz.udacitypopularmovies.DetailActivity">
+            android:textSize="@dimen/movie_title_size"
+            android:textStyle="normal"
+            tools:text="@string/placeholder_movie_title" />
 
-            <TextView
-                android:id="@+id/movie_title"
-                android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="20dp">
+
+            <ImageView
+                android:id="@+id/movie_poster"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/movie_title_size"
-                android:textStyle="normal"
-                tools:text="@string/placeholder_movie_title" />
+                android:contentDescription="@string/placeholder_movie_poster" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="20dp">
+                android:orientation="vertical"
+                android:padding="10dp">
 
-                <ImageView
-                    android:id="@+id/movie_poster"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/movie_release_date"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/placeholder_movie_poster" />
+                    android:layout_gravity="start"
+                    android:textSize="@dimen/release_date_text_size"
+                    tools:text="@string/placeholder_release_date" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/movie_vote_average"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:id="@+id/movie_release_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:textSize="@dimen/release_date_text_size"
-                        tools:text="@string/placeholder_release_date" />
-
-                    <TextView
-                        android:id="@+id/movie_vote_average"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:textSize="@dimen/vote_average_text_size"
-                        tools:text="@string/placeholder_vote_average" />
+                    android:layout_gravity="start"
+                    android:textSize="@dimen/vote_average_text_size"
+                    tools:text="@string/placeholder_vote_average" />
 
 
-                </LinearLayout>
             </LinearLayout>
+        </LinearLayout>
 
             <TextView
                 android:id="@+id/movie_plot_synopsis"
@@ -77,9 +78,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:textSize="@dimen/reviews_text_size"
-                tools:text="@string/placeholder_review_text" />
+                tools:text="@string/placeholder_lorem_ipsum" />
 
             <include layout="@layout/activity_reviews" />
+            <include layout="@layout/activity_videos" />
         </LinearLayout>
 
         <ProgressBar

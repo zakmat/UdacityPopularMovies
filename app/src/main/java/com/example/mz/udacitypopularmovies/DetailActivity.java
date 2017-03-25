@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.mz.udacitypopularmovies.data.MovieEntry;
 import com.example.mz.udacitypopularmovies.data.ReviewEntry;
+import com.example.mz.udacitypopularmovies.data.TrailerEntry;
 import com.example.mz.udacitypopularmovies.utilities.JsonUtils;
 import com.example.mz.udacitypopularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -38,7 +39,9 @@ public class DetailActivity extends AppCompatActivity {
     private ImageView mImageView;
     private ProgressBar mLoadingIndicator;
     private int mMovieId;
+    private String moviePoster;
     private ReviewsAdapter mReviewAdapter;
+    private TrailersAdapter mTrailerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,27 +52,11 @@ public class DetailActivity extends AppCompatActivity {
         mReviewAdapter = new ReviewsAdapter(DetailActivity.this, reviews);
         ListView listView = (ListView) findViewById(R.id.lv_reviews);
         listView.setAdapter(mReviewAdapter);
-        listView.setOnTouchListener(new ListView.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                switch (action) {
-                    case MotionEvent.ACTION_DOWN:
-                        // Disallow ScrollView to intercept touch events.
-                        v.getParent().requestDisallowInterceptTouchEvent(true);
-                        break;
 
-                    case MotionEvent.ACTION_UP:
-                        // Allow ScrollView to intercept touch events.
-                        v.getParent().requestDisallowInterceptTouchEvent(false);
-                        break;
-                }
-
-                // Handle ListView touch events.
-                v.onTouchEvent(event);
-                return true;
-            }
-        });
+        ArrayList<TrailerEntry> trailers = new ArrayList<TrailerEntry>();
+        mTrailerAdapter = new TrailersAdapter(DetailActivity.this, trailers);
+        ListView trailer_listView = (ListView) findViewById(R.id.lv_videos);
+        trailer_listView.setAdapter(mTrailerAdapter);
         mTitleTextView = (TextView) findViewById(R.id.movie_title);
         mReleaseDateTextView = (TextView) findViewById(R.id.movie_release_date);
         mVoteAverageTextView = (TextView) findViewById(R.id.movie_vote_average);
@@ -86,9 +73,11 @@ public class DetailActivity extends AppCompatActivity {
             mReleaseDateTextView.setText(DateFormat.format("MMM d, yyyy", incomingEntry.releaseDate));
             mVoteAverageTextView.setText("TMDb: "+ Double.valueOf(incomingEntry.voteAverage).toString() + "/10");
             mPlotSynopsisTextView.setText(incomingEntry.overview);
+            moviePoster = incomingEntry.posterPath;
             Uri poster = NetworkUtils.buildPosterRequest(new Integer(342), incomingEntry.posterPath);
             Picasso.with(context).load(poster).into(mImageView);
             loadReviewsData();
+            loadTrailersData();
         }
     }
 
@@ -178,4 +167,94 @@ public class DetailActivity extends AppCompatActivity {
     private void loadReviewsData() {
         new FetchReviewsTask().execute();
     }
+
+    public class FetchTrailersTask extends AsyncTask<Void, Void, TrailerEntry[]> {
+        private final String LOG_TAG = FetchTrailersTask.class.getSimpleName();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected TrailerEntry[] doInBackground(Void... params) {
+
+            URL trailerRequest = NetworkUtils.buildMovieVideosRequest(Integer.valueOf(mMovieId));
+
+            try {
+                String jsonMovieResponse = NetworkUtils
+                        .getResponseFromHttpUrl(trailerRequest);
+
+                Log.i(LOG_TAG, "Retrieved " + jsonMovieResponse.length() + " bytes of data");
+
+                TrailerEntry[] trailerData = JsonUtils
+                        .getTrailersDataFromJson(DetailActivity.this, jsonMovieResponse);
+
+                return trailerData;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(TrailerEntry[] trailerData) {
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
+            if (trailerData != null) {
+                mTrailerAdapter.setTrailerData(trailerData);
+            }
+            else {
+                Toast.makeText(getApplicationContext(), R.string.fetch_error_message, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public class TrailersAdapter extends ArrayAdapter<TrailerEntry> {
+        private final String TAG = TrailersAdapter.class.getSimpleName().toString();
+        ArrayList<TrailerEntry> mTrailers;
+        public TrailersAdapter(Context context, ArrayList<TrailerEntry> trailers) {
+            super(context, 0, trailers);
+            mTrailers = trailers;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            // Get the data item for this position
+            TrailerEntry trailer = getItem(position);
+            Log.i(TAG, "GetView called for position " + position + " trailer's name is: " + trailer.name);
+            // Check if an existing view is being reused, otherwise inflate the view
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.trailer_details, parent, false);
+            }
+            // Lookup view for data population
+            //TODO: put some static image as a trailer icon
+            if (moviePoster != null) {
+                Uri poster = NetworkUtils.buildPosterRequest(new Integer(342), moviePoster);
+                Context context = parent.getContext();
+                Picasso.with(context).load(poster).into(mImageView);
+            }
+            //TODO: find a way how to use regular youtube thumbnail
+            TextView tvName = (TextView) convertView.findViewById(R.id.trailer_name);
+            // Populate the data into the template view using the data object
+            tvName.setText(trailer.name);
+            // Return the completed view to render on screen
+            return convertView;
+        }
+
+        private void setTrailerData(TrailerEntry[] trailerData) {
+            Log.i(TAG, "before setTrailerData there is " + getCount() + " elements in a view");
+            if ((trailerData) == null) {
+                mTrailers.clear();
+            } else {
+                mTrailers.addAll(Arrays.asList(trailerData));
+            }
+            notifyDataSetChanged();
+            Log.i(TAG, "after setTrailerData there is " + getCount() + " elements in a view");
+        }
+    }
+        private void loadTrailersData() {
+            new FetchTrailersTask().execute();
+        }
 }

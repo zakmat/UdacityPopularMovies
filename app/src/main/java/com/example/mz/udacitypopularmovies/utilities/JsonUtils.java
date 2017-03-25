@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.mz.udacitypopularmovies.DetailActivity;
 import com.example.mz.udacitypopularmovies.data.MovieEntry;
 import com.example.mz.udacitypopularmovies.data.ReviewEntry;
+import com.example.mz.udacitypopularmovies.data.TrailerEntry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,15 +39,38 @@ public final class JsonUtils {
 
     static final String STATUS_CODE = "status_code";
     static final String RESULTS = "results";
+    private static final String NAME = "name";
+    private static final String KEY = "key";
+    private static final String SITE = "site";
 
     /**
+     *
      * @param movieJsonStr JSON response from server
+     *
      * @return Array of Strings describing movie data
+     *
      * @throws JSONException If JSON data cannot be properly parsed
      */
     public static MovieEntry[] getFullMovieDataFromJson(Context context, String movieJsonStr)
             throws JSONException {
+
+        /* Weather information. Each day's forecast info is an element of the "list" array */
+        final String RESULTS = "results";
+
+
+        final String MOVIE_ID = "id";
+        final String POSTER = "poster_path";
+        final String TITLE = "title";
+        final String OVERVIEW = "overview";
+        final String RELEASE_DATE = "release_date";
+        final String RATING = "vote_average";
+
+        final String STATUS_CODE = "status_code";
+
+        /* String array to hold each day's weather String */
+
         JSONObject movieJson = new JSONObject(movieJsonStr);
+
         /* Is there an error? */
         if (movieJson.has(STATUS_CODE)) {
             int errorCode = movieJson.getInt(STATUS_CODE);
@@ -115,6 +139,37 @@ public final class JsonUtils {
         return parsedReviewsData;
     }
 
+    public static TrailerEntry[] getTrailersDataFromJson(DetailActivity detailActivity, String jsonTrailersResponse)
+            throws JSONException {
+        JSONObject trailerJson = new JSONObject(jsonTrailersResponse);
+
+        /* Is there an error? */
+        if (trailerJson.has(STATUS_CODE)) {
+            int errorCode = trailerJson.getInt(STATUS_CODE);
+            if (errorCode != HttpURLConnection.HTTP_OK) {
+                handleBadStatus(errorCode);
+                return null;
+            }
+        }
+
+        JSONArray trailerArray = trailerJson.getJSONArray(RESULTS);
+
+        TrailerEntry[] parsedTrailersData = new TrailerEntry[trailerArray.length()];
+
+        for (int i = 0; i < trailerArray.length(); i++) {
+            JSONObject trailer = trailerArray.getJSONObject(i);
+
+            String trailer_id = trailer.getString(MOVIE_ID);
+            String name = trailer.getString(NAME);
+            String key = trailer.getString(KEY);
+            String site = trailer.getString(SITE);
+
+            parsedTrailersData[i] = new TrailerEntry(trailer_id, name, key, site);
+            Log.i("JsonUtils", name + " " + key + " " + site);
+        }
+
+        return parsedTrailersData;
+    }
     private static void handleBadStatus(int errorCode) {
         switch (errorCode) {
             case HttpURLConnection.HTTP_UNAUTHORIZED:
