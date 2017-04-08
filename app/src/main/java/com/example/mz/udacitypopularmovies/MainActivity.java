@@ -57,10 +57,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                     loadMoviesData(getResources().getString(R.string.popular_label), "1");
                 } else if (selectedItem.equals(getResources().getString(R.string.top_rated_value))) {
                     loadMoviesData(getResources().getString(R.string.top_rated_label), "1");
+                } else if (selectedItem.equals(getResources().getString(R.string.favourites_value))) {
+                    Toast.makeText(getBaseContext(), "Here offline movies will be shown", Toast.LENGTH_LONG).show();
+//                    loadMoviesData(getResources().getString(R.string.favourites_label), "1");
                 } else {
                     Log.e("SPINNER", "Not recognized item selected");
                 }
-
             }
 
             @Override
@@ -105,8 +107,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     @Override
     public void OnClick(MovieEntry entry) {
-//        Toast.makeText(MainActivity.this, "This will move to the details screen of movie: " + entry.title,
-//                Toast.LENGTH_SHORT).show();
         Context context = MainActivity.this;
         Class destinationClass = DetailActivity.class;
         Intent intent = new Intent(context, destinationClass);

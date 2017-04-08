@@ -1,5 +1,6 @@
 package com.example.mz.udacitypopularmovies;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mz.udacitypopularmovies.data.MovieContract;
 import com.example.mz.udacitypopularmovies.data.MovieEntry;
 import com.example.mz.udacitypopularmovies.data.ReviewEntry;
 import com.example.mz.udacitypopularmovies.data.TrailerEntry;
@@ -37,10 +39,11 @@ public class DetailActivity extends AppCompatActivity {
     private TextView mPlotSynopsisTextView;
     private ImageView mImageView;
     private ProgressBar mLoadingIndicator;
-    private int mMovieId;
     private String moviePoster;
     private ReviewsAdapter mReviewAdapter;
     private TrailersAdapter mTrailerAdapter;
+
+    private MovieEntry mMovie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,18 +68,46 @@ public class DetailActivity extends AppCompatActivity {
         Intent incomingIntent = getIntent();
         String extraName = MovieEntry.class.getSimpleName();
         if (incomingIntent.hasExtra(extraName)) {
-            MovieEntry incomingEntry = incomingIntent.getParcelableExtra(extraName);
-            mMovieId = incomingEntry.movie_id;
-            mTitleTextView.setText(incomingEntry.title);
-            Context context = DetailActivity.this;
-            mReleaseDateTextView.setText(DateFormat.format("MMM d, yyyy", incomingEntry.releaseDate));
-            mVoteAverageTextView.setText("TMDb: "+ Double.valueOf(incomingEntry.voteAverage).toString() + "/10");
-            mPlotSynopsisTextView.setText(incomingEntry.overview);
-            moviePoster = incomingEntry.posterPath;
-            Uri poster = NetworkUtils.buildPosterRequest(Integer.valueOf(342), incomingEntry.posterPath);
-            Picasso.with(context).load(poster).into(mImageView);
+            mMovie = incomingIntent.getParcelableExtra(extraName);
+            fillMovieDetails(mMovie);
             loadReviewsData();
             loadTrailersData();
+        }
+    }
+
+    private void fillMovieDetails(MovieEntry incomingEntry) {
+
+        mTitleTextView.setText(incomingEntry.title);
+        Context context = DetailActivity.this;
+        mReleaseDateTextView.setText(DateFormat.format("MMM d, yyyy", incomingEntry.releaseDate));
+        mVoteAverageTextView.setText("TMDb: " + Double.valueOf(incomingEntry.voteAverage).toString() + "/10");
+        mPlotSynopsisTextView.setText(incomingEntry.overview);
+        moviePoster = incomingEntry.posterPath;
+        Uri poster = NetworkUtils.buildPosterRequest(Integer.valueOf(342), incomingEntry.posterPath);
+        Picasso.with(context).load(poster).into(mImageView);
+    }
+
+    private ContentValues prepareContentValues(MovieEntry incomingEntry) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, incomingEntry.movie_id);
+        contentValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, incomingEntry.overview);
+        contentValues.put(MovieContract.MovieEntry.COLUMN_POSTERPATH, incomingEntry.posterPath);
+        contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, incomingEntry.releaseDate.getTime());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, incomingEntry.title);
+        contentValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, incomingEntry.voteAverage);
+
+        return contentValues;
+    }
+
+
+    public void onClickFavorite(View view) {
+        ContentValues cv = prepareContentValues(mMovie);
+        ContentValues[] values = new ContentValues[]{cv};
+        if (getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI, values) > 0) {
+            Toast.makeText(getBaseContext(), "Movie added to the favourites", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getBaseContext(), "Insert into database failed", Toast.LENGTH_LONG).show();
+            Log.w("DETAIL_ACTIVITY", "Insert into database failed");
         }
     }
 
@@ -92,7 +123,7 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected ReviewEntry[] doInBackground(Void... params) {
 
-            URL reviewRequest = NetworkUtils.buildMovieReviewsRequest(Integer.valueOf(mMovieId));
+            URL reviewRequest = NetworkUtils.buildMovieReviewsRequest(Integer.valueOf(mMovie.movie_id));
 
             try {
                 String jsonMovieResponse = NetworkUtils
@@ -179,7 +210,7 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected TrailerEntry[] doInBackground(Void... params) {
 
-            URL trailerRequest = NetworkUtils.buildMovieVideosRequest(Integer.valueOf(mMovieId));
+            URL trailerRequest = NetworkUtils.buildMovieVideosRequest(Integer.valueOf(mMovie.movie_id));
 
             try {
                 String jsonMovieResponse = NetworkUtils
