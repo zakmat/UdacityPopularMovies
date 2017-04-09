@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
@@ -12,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -23,13 +21,12 @@ import com.example.mz.udacitypopularmovies.data.MovieContract;
 import com.example.mz.udacitypopularmovies.data.MovieEntry;
 import com.example.mz.udacitypopularmovies.data.ReviewEntry;
 import com.example.mz.udacitypopularmovies.data.TrailerEntry;
-import com.example.mz.udacitypopularmovies.utilities.JsonUtils;
+import com.example.mz.udacitypopularmovies.utilities.CustomAdapter;
+import com.example.mz.udacitypopularmovies.utilities.FetchTask;
 import com.example.mz.udacitypopularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -39,9 +36,8 @@ public class DetailActivity extends AppCompatActivity {
     private TextView mPlotSynopsisTextView;
     private ImageView mImageView;
     private ProgressBar mLoadingIndicator;
-    private String moviePoster;
-    private ReviewsAdapter mReviewAdapter;
-    private TrailersAdapter mTrailerAdapter;
+    private CustomAdapter<ReviewEntry> mReviewAdapter;
+    private CustomAdapter<TrailerEntry> mTrailerAdapter;
 
     private MovieEntry mMovie;
 
@@ -51,12 +47,12 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         ArrayList<ReviewEntry> reviews = new ArrayList<>();
-        mReviewAdapter = new ReviewsAdapter(DetailActivity.this, reviews);
+        mReviewAdapter = new CustomAdapter(this, reviews);
         ListView listView = (ListView) findViewById(R.id.lv_reviews);
         listView.setAdapter(mReviewAdapter);
 
         ArrayList<TrailerEntry> trailers = new ArrayList<>();
-        mTrailerAdapter = new TrailersAdapter(DetailActivity.this, trailers);
+        mTrailerAdapter = new CustomAdapter<TrailerEntry>(this, trailers);
         ListView trailer_listView = (ListView) findViewById(R.id.lv_videos);
         trailer_listView.setAdapter(mTrailerAdapter);
         mTitleTextView = (TextView) findViewById(R.id.movie_title);
@@ -81,10 +77,24 @@ public class DetailActivity extends AppCompatActivity {
         Context context = DetailActivity.this;
         mReleaseDateTextView.setText(DateFormat.format("MMM d, yyyy", incomingEntry.releaseDate));
         mVoteAverageTextView.setText("TMDb: " + Double.valueOf(incomingEntry.voteAverage).toString() + "/10");
+        setStarRating(incomingEntry.voteAverage);
         mPlotSynopsisTextView.setText(incomingEntry.overview);
-        moviePoster = incomingEntry.posterPath;
-        Uri poster = NetworkUtils.buildPosterRequest(Integer.valueOf(342), incomingEntry.posterPath);
+        Uri poster = NetworkUtils.buildPosterRequest(342, incomingEntry.posterPath);
         Picasso.with(context).load(poster).into(mImageView);
+    }
+
+    private void setStarRating(double voteAverage) {
+        int starRates = (int) Math.round(voteAverage / 2.0);
+        if (starRates > 0)
+            ((ImageView) findViewById(R.id.movie_rating_star1)).setImageResource(R.drawable.star_on_24px);
+        if (starRates > 1)
+            ((ImageView) findViewById(R.id.movie_rating_star2)).setImageResource(R.drawable.star_on_24px);
+        if (starRates > 2)
+            ((ImageView) findViewById(R.id.movie_rating_star3)).setImageResource(R.drawable.star_on_24px);
+        if (starRates > 3)
+            ((ImageView) findViewById(R.id.movie_rating_star4)).setImageResource(R.drawable.star_on_24px);
+        if (starRates > 4)
+            ((ImageView) findViewById(R.id.movie_rating_star5)).setImageResource(R.drawable.star_on_24px);
     }
 
     private ContentValues prepareContentValues(MovieEntry incomingEntry) {
@@ -111,180 +121,48 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-    public class FetchReviewsTask extends AsyncTask<Void, Void, ReviewEntry[]> {
-        private final String LOG_TAG = FetchReviewsTask.class.getSimpleName();
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected ReviewEntry[] doInBackground(Void... params) {
-
-            URL reviewRequest = NetworkUtils.buildMovieReviewsRequest(Integer.valueOf(mMovie.movie_id));
-
-            try {
-                String jsonMovieResponse = NetworkUtils
-                        .getResponseFromHttpUrl(reviewRequest);
-
-                Log.i(LOG_TAG, "Retrieved " + jsonMovieResponse.length() + " bytes of data");
-
-                ReviewEntry[] reviewData = JsonUtils
-                        .getReviewsDataFromJson(DetailActivity.this, jsonMovieResponse);
-
-                return reviewData;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ReviewEntry[] reviewData) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (reviewData != null) {
-                mReviewAdapter.setReviewData(reviewData);
-            }
-            else {
-                Toast.makeText(getApplicationContext(), R.string.fetch_error_message, Toast.LENGTH_LONG).show();
-            }
-        }
+    public void showLoadingIndicator(boolean visible) {
+        mLoadingIndicator.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 
+    public int getMovieId() {
+        return mMovie.movie_id;
+    }
 
-    public class ReviewsAdapter extends ArrayAdapter<ReviewEntry> {
-        private final String TAG = ReviewsAdapter.class.getSimpleName().toString();
-        ArrayList<ReviewEntry> mReviews;
-        public ReviewsAdapter(Context context, ArrayList<ReviewEntry> reviews) {
-            super(context, 0, reviews);
-            mReviews = reviews;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            // Get the data item for this position
-            ReviewEntry review = getItem(position);
-            Log.i(TAG, "GetView called for position " + position + " review's author is: " + review.author);
-            // Check if an existing view is being reused, otherwise inflate the view
+    public View inflate(Context context, View convertView, ViewGroup parent, Object entry) {
+        if (entry instanceof ReviewEntry) {
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.review_details, parent, false);
+                convertView = LayoutInflater.from(context).inflate(R.layout.review_details, parent, false);
             }
+            ReviewEntry review = (ReviewEntry) entry;
             // Lookup view for data population
             TextView tvAuthor = (TextView) convertView.findViewById(R.id.review_author);
             TextView tvContent = (TextView) convertView.findViewById(R.id.review_content);
             // Populate the data into the template view using the data object
             tvAuthor.setText(review.author);
             tvContent.setText(review.content);
-            // Return the completed view to render on screen
-            return convertView;
-        }
-
-        private void setReviewData(ReviewEntry[] reviewData) {
-            Log.i(TAG, "before setReviewData there is " + getCount() + " elements in a view");
-            if (reviewData == null) {
-                mReviews.clear();
-            } else {
-                mReviews.addAll(Arrays.asList(reviewData));
-            }
-            notifyDataSetChanged();
-            Log.i(TAG, "after setReviewData there is " + getCount() + " elements in a view");
-        }
-    }
-
-    private void loadReviewsData() {
-        new FetchReviewsTask().execute();
-    }
-
-    public class FetchTrailersTask extends AsyncTask<Void, Void, TrailerEntry[]> {
-        private final String LOG_TAG = FetchTrailersTask.class.getSimpleName();
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected TrailerEntry[] doInBackground(Void... params) {
-
-            URL trailerRequest = NetworkUtils.buildMovieVideosRequest(Integer.valueOf(mMovie.movie_id));
-
-            try {
-                String jsonMovieResponse = NetworkUtils
-                        .getResponseFromHttpUrl(trailerRequest);
-
-                Log.i(LOG_TAG, "Retrieved " + jsonMovieResponse.length() + " bytes of data");
-
-                TrailerEntry[] trailerData = JsonUtils
-                        .getTrailersDataFromJson(DetailActivity.this, jsonMovieResponse);
-
-                return trailerData;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(TrailerEntry[] trailerData) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (trailerData != null) {
-                mTrailerAdapter.setTrailerData(trailerData);
-            }
-            else {
-                Toast.makeText(getApplicationContext(), R.string.fetch_error_message, Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    public class TrailersAdapter extends ArrayAdapter<TrailerEntry> {
-        private final String TAG = TrailersAdapter.class.getSimpleName().toString();
-        ArrayList<TrailerEntry> mTrailers;
-        public TrailersAdapter(Context context, ArrayList<TrailerEntry> trailers) {
-            super(context, 0, trailers);
-            mTrailers = trailers;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            // Get the data item for this position
-            TrailerEntry trailer = getItem(position);
-            Log.i(TAG, "GetView called for position " + position + " trailer's name is: " + trailer.name);
-            // Check if an existing view is being reused, otherwise inflate the view
+        } else if (entry instanceof TrailerEntry) {
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.trailer_details, parent, false);
+                convertView = LayoutInflater.from(context).inflate(R.layout.trailer_details, parent, false);
             }
+            TrailerEntry trailer = (TrailerEntry) entry;
             // Lookup view for data population
-            //TODO: put some static image as a trailer icon
-            if (moviePoster != null) {
-                Uri poster = NetworkUtils.buildPosterRequest(Integer.valueOf(342), moviePoster);
-                Context context = parent.getContext();
-                Picasso.with(context).load(poster).into(mImageView);
-            }
+            //TODO: put some static image as a trailer icon or
             //TODO: find a way how to use regular youtube thumbnail
             TextView tvName = (TextView) convertView.findViewById(R.id.trailer_name);
             // Populate the data into the template view using the data object
             tvName.setText(trailer.name);
             // Return the completed view to render on screen
-            return convertView;
-        }
 
-        private void setTrailerData(TrailerEntry[] trailerData) {
-            Log.i(TAG, "before setTrailerData there is " + getCount() + " elements in a view");
-            if ((trailerData) == null) {
-                mTrailers.clear();
-            } else {
-                mTrailers.addAll(Arrays.asList(trailerData));
-            }
-            notifyDataSetChanged();
-            Log.i(TAG, "after setTrailerData there is " + getCount() + " elements in a view");
         }
+        return convertView;
     }
-        private void loadTrailersData() {
-            new FetchTrailersTask().execute();
-        }
+
+    private void loadReviewsData() {
+        new FetchTask<>(ReviewEntry.class, this, mReviewAdapter).execute();
+    }
+
+    private void loadTrailersData() {
+        new FetchTask<>(TrailerEntry.class, this, mTrailerAdapter).execute();
+    }
 }

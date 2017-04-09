@@ -3,6 +3,9 @@ package com.example.mz.udacitypopularmovies.utilities;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.mz.udacitypopularmovies.data.ReviewEntry;
+import com.example.mz.udacitypopularmovies.data.TrailerEntry;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -34,7 +37,6 @@ public final class NetworkUtils {
     //TODO: Please enter here your api-key
     private static final String apiKey = "";
     private static final String language = "en-US";
-    private static final int page = 1;
 
     public static Uri buildPosterRequest(Integer requestedSize, String posterPath) {
         Uri builtUri = Uri.parse(DBMOVIE_IMAGE_BASE_URL).buildUpon().appendPath("w" + requestedSize.toString()).appendEncodedPath(posterPath).build();
@@ -60,18 +62,21 @@ public final class NetworkUtils {
         return buildUrlFromURI(builtUri);
     }
 
-    public static URL buildMovieReviewsRequest(Integer movieId) {
+    public static URL buildMovieRequest(Class klass, Integer movieId) {
         Log.v(TAG, "Int of movie id:" + movieId.toString());
-        Uri builtUri = Uri.parse(String.format(DBMOVIE_REVIEW_URL, movieId)).buildUpon()
+        String dbMovieUrl;
+        if (klass.equals(ReviewEntry.class)) {
+            dbMovieUrl = DBMOVIE_REVIEW_URL;
+        } else if (klass.equals(TrailerEntry.class)) {
+            dbMovieUrl = DBMOVIE_VIDEO_URL;
+        } else {
+            Log.v(TAG, "No appropriate URL for " + klass.getSimpleName() + " request");
+            return null;
+        }
+        Uri builtUri = Uri.parse(String.format(dbMovieUrl, movieId)).buildUpon()
                 .appendQueryParameter(APIKEY_PARAM, apiKey).build();
         return buildUrlFromURI(builtUri);
-    }
 
-    public static URL buildMovieVideosRequest(Integer movieId) {
-        Log.v(TAG, "Int of movie id:" + movieId.toString());
-        Uri builtUri = Uri.parse(String.format(DBMOVIE_VIDEO_URL, movieId)).buildUpon()
-                .appendQueryParameter(APIKEY_PARAM, apiKey).build();
-        return buildUrlFromURI(builtUri);
     }
 
     private static URL buildUrlFromURI(Uri uri) {

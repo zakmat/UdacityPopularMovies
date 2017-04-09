@@ -3,6 +3,10 @@ package com.example.mz.udacitypopularmovies.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.mz.udacitypopularmovies.utilities.NetworkUtils;
+
+import java.net.URL;
+
 /**
  * Created by mz on 2017-02-20.
  */
@@ -51,5 +55,9 @@ public class TrailerEntry implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.key);
         dest.writeString(this.site);
+    }
+
+    static public URL buildRequest(int movie_id) {
+        return NetworkUtils.buildMovieRequest(TrailerEntry.class, movie_id);
     }
 }

@@ -109,6 +109,17 @@ public final class JsonUtils {
         return parsedMoviesData;
     }
 
+    public static <CustomEntry> CustomEntry[] getEntriesFromJson(Class<CustomEntry> klass, DetailActivity detailActivity, String jsonRequest) throws JSONException {
+        if (klass.equals(ReviewEntry.class)) {
+            return (CustomEntry[]) getReviewsDataFromJson(detailActivity, jsonRequest);
+        } else if (klass.equals(TrailerEntry.class)) {
+            return (CustomEntry[]) getTrailersDataFromJson(detailActivity, jsonRequest);
+        }
+
+        Log.i(TAG, "No known JSON parser for class " + klass.getSimpleName());
+        return null;
+    }
+
     public static ReviewEntry[] getReviewsDataFromJson(DetailActivity detailActivity, String jsonReviewsResponse)
             throws JSONException {
         JSONObject reviewJson = new JSONObject(jsonReviewsResponse);

@@ -3,13 +3,17 @@ package com.example.mz.udacitypopularmovies.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.mz.udacitypopularmovies.utilities.NetworkUtils;
+
+import java.net.URL;
+
 /**
  * Created by mz on 2017-02-20.
  */
 
 public class ReviewEntry implements Parcelable {
 
-    public String review_id;
+    private String review_id;
     public String author;
     public String content;
 
@@ -47,5 +51,9 @@ public class ReviewEntry implements Parcelable {
         dest.writeString(this.review_id);
         dest.writeString(this.author);
         dest.writeString(this.content);
+    }
+
+    static public URL buildRequest(int movie_id) {
+        return NetworkUtils.buildMovieRequest(ReviewEntry.class, movie_id);
     }
 }
