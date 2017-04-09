@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="movie_title_size">36sp</dimen>
-    <dimen name="release_date_text_size">20sp</dimen>
-    <dimen name="vote_average_text_size">24sp</dimen>
-    <dimen name="plot_synopsis_text_size">20sp</dimen>
-    <dimen name="reviews_text_size">20sp</dimen>
-    <dimen name="trailers_text_size">20sp</dimen>
-    <dimen name="reviews_header_text_size">36sp</dimen>
-    <dimen name="trailers_header_text_size">36sp</dimen>
+    <dimen name="release_date_text_size">16sp</dimen>
+    <dimen name="vote_average_text_size">20sp</dimen>
+    <dimen name="plot_synopsis_text_size">16sp</dimen>
+    <dimen name="reviews_text_size">16sp</dimen>
+    <dimen name="trailers_text_size">16sp</dimen>
+    <dimen name="reviews_header_text_size">24sp</dimen>
+    <dimen name="trailers_header_text_size">24sp</dimen>
 </resources>

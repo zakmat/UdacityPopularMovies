@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,19 +11,23 @@
         android:id="@+id/trailer_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:padding="4dp"
+        android:gravity="center_vertical"
         android:clickable="true"
         android:focusable="true"
         android:textSize="16sp"
         android:contentDescription="@string/placeholder_trailer_name"
-        tools:background="#f00"
-        tools:layout_height="100dp"
-        tools:layout_width="100dp" />
+        android:tint="@color/colorPrimary"
+        app:srcCompat="@drawable/ic_play_circle_outline_black_24dp"
+        tools:layout_height="wrap_content"
+        tools:layout_width="wrap_content" />
 
     <TextView
         android:id="@+id/trailer_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/trailers_text_size"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        style="@style/Base.TextAppearance.AppCompat.Body1"
         tools:text="@string/placeholder_trailer_name" />
 </LinearLayout>

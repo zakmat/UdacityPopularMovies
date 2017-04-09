@@ -10,12 +10,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reviews_label"
-        android:textSize="@dimen/reviews_header_text_size" />
+        style="@style/Base.TextAppearance.AppCompat.Headline" />
+
+    <View style="@style/Divider" />
 
     <ListView
         android:id="@+id/lv_reviews"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#0f0"
         tools:text="@string/placeholder_lorem_ipsum" />
 </LinearLayout>

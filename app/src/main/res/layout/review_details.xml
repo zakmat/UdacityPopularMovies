@@ -12,12 +12,15 @@
             android:layout_marginBottom="4dp"
             android:clickable="true"
             android:focusable="true"
-            android:textSize="16sp"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
             tools:text="@string/placeholder_review_author" />
 
         <TextView
             android:id="@+id/review_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Base.TextAppearance.AppCompat.Caption"
             tools:text="@string/placeholder_lorem_ipsum" />
+
+    <View style="@style/Divider" />
 </LinearLayout>
