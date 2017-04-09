@@ -48,12 +48,12 @@ public class DetailActivity extends AppCompatActivity {
 
         ArrayList<ReviewEntry> reviews = new ArrayList<>();
         mReviewAdapter = new CustomAdapter(this, reviews);
-        ListView listView = (ListView) findViewById(R.id.lv_reviews);
-        listView.setAdapter(mReviewAdapter);
+        final ListView review_listView = (ListView) findViewById(R.id.lv_reviews);
+        review_listView.setAdapter(mReviewAdapter);
 
         ArrayList<TrailerEntry> trailers = new ArrayList<>();
-        mTrailerAdapter = new CustomAdapter<TrailerEntry>(this, trailers);
-        ListView trailer_listView = (ListView) findViewById(R.id.lv_videos);
+        mTrailerAdapter = new CustomAdapter(this, trailers);
+        final ListView trailer_listView = (ListView) findViewById(R.id.lv_videos);
         trailer_listView.setAdapter(mTrailerAdapter);
         mTitleTextView = (TextView) findViewById(R.id.movie_title);
         mReleaseDateTextView = (TextView) findViewById(R.id.movie_release_date);
@@ -134,27 +134,34 @@ public class DetailActivity extends AppCompatActivity {
             if (convertView == null) {
                 convertView = LayoutInflater.from(context).inflate(R.layout.review_details, parent, false);
             }
-            ReviewEntry review = (ReviewEntry) entry;
             // Lookup view for data population
             TextView tvAuthor = (TextView) convertView.findViewById(R.id.review_author);
             TextView tvContent = (TextView) convertView.findViewById(R.id.review_content);
             // Populate the data into the template view using the data object
+            ReviewEntry review = (ReviewEntry) entry;
             tvAuthor.setText(review.author);
             tvContent.setText(review.content);
         } else if (entry instanceof TrailerEntry) {
             if (convertView == null) {
                 convertView = LayoutInflater.from(context).inflate(R.layout.trailer_details, parent, false);
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        TrailerEntry trailer = (TrailerEntry) v.getTag();
+
+                        Uri builtUri = Uri.parse("http://www.youtube.com").buildUpon().appendPath("watch")
+                                .appendQueryParameter("v", trailer.key).build();
+                        Log.i("DetailActivity", builtUri.toString());
+                        startActivity(new Intent(Intent.ACTION_VIEW, builtUri));
+                    }
+                });
             }
-            TrailerEntry trailer = (TrailerEntry) entry;
-            // Lookup view for data population
-            //TODO: put some static image as a trailer icon or
-            //TODO: find a way how to use regular youtube thumbnail
             TextView tvName = (TextView) convertView.findViewById(R.id.trailer_name);
             // Populate the data into the template view using the data object
+            TrailerEntry trailer = (TrailerEntry) entry;
             tvName.setText(trailer.name);
-            // Return the completed view to render on screen
-
         }
+        convertView.setTag(entry);
         return convertView;
     }
 

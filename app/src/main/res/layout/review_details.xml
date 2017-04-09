@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp">
+
+    <View style="@style/Divider" />
         <TextView
             android:id="@+id/review_author"
             android:layout_width="match_parent"
@@ -22,5 +24,4 @@
             style="@style/Base.TextAppearance.AppCompat.Caption"
             tools:text="@string/placeholder_lorem_ipsum" />
 
-    <View style="@style/Divider" />
 </LinearLayout>

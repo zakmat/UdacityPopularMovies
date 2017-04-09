@@ -15,7 +15,7 @@ public class TrailerEntry implements Parcelable {
 
     private String trailer_id;
     public String name;
-    private String key;
+    public String key;
     private String site;
 
 
