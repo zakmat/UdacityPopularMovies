@@ -102,6 +102,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     private void loadMoviesData(String queryType, String page) {
+        if (page.equals("1")) {
+            mMovieAdapter.setMovieData(null);
+        }
         new FetchMoviesTask().execute(queryType, page);
     }
 
