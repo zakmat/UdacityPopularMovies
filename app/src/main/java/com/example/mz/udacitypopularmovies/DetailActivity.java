@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,12 +21,12 @@ import com.example.mz.udacitypopularmovies.data.MovieContract;
 import com.example.mz.udacitypopularmovies.data.MovieEntry;
 import com.example.mz.udacitypopularmovies.data.ReviewEntry;
 import com.example.mz.udacitypopularmovies.data.TrailerEntry;
-import com.example.mz.udacitypopularmovies.utilities.CustomAdapter;
 import com.example.mz.udacitypopularmovies.utilities.FetchTask;
 import com.example.mz.udacitypopularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -36,25 +36,16 @@ public class DetailActivity extends AppCompatActivity {
     private TextView mPlotSynopsisTextView;
     private ImageView mImageView;
     private ProgressBar mLoadingIndicator;
-    private CustomAdapter<ReviewEntry> mReviewAdapter;
-    private CustomAdapter<TrailerEntry> mTrailerAdapter;
 
     private MovieEntry mMovie;
+    private ArrayList<TrailerEntry> mTrailers;
+    private ArrayList<ReviewEntry> mReviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        ArrayList<ReviewEntry> reviews = new ArrayList<>();
-        mReviewAdapter = new CustomAdapter(this, reviews);
-        final ListView review_listView = (ListView) findViewById(R.id.lv_reviews);
-        review_listView.setAdapter(mReviewAdapter);
-
-        ArrayList<TrailerEntry> trailers = new ArrayList<>();
-        mTrailerAdapter = new CustomAdapter(this, trailers);
-        final ListView trailer_listView = (ListView) findViewById(R.id.lv_videos);
-        trailer_listView.setAdapter(mTrailerAdapter);
         mTitleTextView = (TextView) findViewById(R.id.movie_title);
         mReleaseDateTextView = (TextView) findViewById(R.id.movie_release_date);
         mVoteAverageTextView = (TextView) findViewById(R.id.movie_vote_average);
@@ -133,14 +124,15 @@ public class DetailActivity extends AppCompatActivity {
         if (entry instanceof ReviewEntry) {
             if (convertView == null) {
                 convertView = LayoutInflater.from(context).inflate(R.layout.review_details, parent, false);
+
+                // Lookup view for data population
+                TextView tvAuthor = (TextView) convertView.findViewById(R.id.review_author);
+                TextView tvContent = (TextView) convertView.findViewById(R.id.review_content);
+                // Populate the data into the template view using the data object
+                ReviewEntry review = (ReviewEntry) entry;
+                tvAuthor.setText(review.author);
+                tvContent.setText(review.content);
             }
-            // Lookup view for data population
-            TextView tvAuthor = (TextView) convertView.findViewById(R.id.review_author);
-            TextView tvContent = (TextView) convertView.findViewById(R.id.review_content);
-            // Populate the data into the template view using the data object
-            ReviewEntry review = (ReviewEntry) entry;
-            tvAuthor.setText(review.author);
-            tvContent.setText(review.content);
         } else if (entry instanceof TrailerEntry) {
             if (convertView == null) {
                 convertView = LayoutInflater.from(context).inflate(R.layout.trailer_details, parent, false);
@@ -166,10 +158,51 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void loadReviewsData() {
-        new FetchTask<>(ReviewEntry.class, this, mReviewAdapter).execute();
+        new FetchTask<>(ReviewEntry.class, this).execute();
     }
 
     private void loadTrailersData() {
-        new FetchTask<>(TrailerEntry.class, this, mTrailerAdapter).execute();
+        new FetchTask<>(TrailerEntry.class, this).execute();
+    }
+
+    public void setEntries(TrailerEntry[] trailers) {
+        mTrailers = new ArrayList<TrailerEntry>(Arrays.asList(trailers));
+        LinearLayout trailerContainer = (LinearLayout) findViewById(R.id.trailer_container);
+        for (TrailerEntry trailer : trailers) {
+            View convertView = LayoutInflater.from(getBaseContext()).inflate(R.layout.trailer_details, trailerContainer, false);
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TrailerEntry trailer = (TrailerEntry) v.getTag();
+
+                    Uri builtUri = Uri.parse("http://www.youtube.com").buildUpon().appendPath("watch")
+                            .appendQueryParameter("v", trailer.key).build();
+                    Log.i("DetailActivity", builtUri.toString());
+                    startActivity(new Intent(Intent.ACTION_VIEW, builtUri));
+                }
+            });
+            TextView tvName = (TextView) convertView.findViewById(R.id.trailer_name);
+            // Populate the data into the template view using the data object
+            tvName.setText(trailer.name);
+            convertView.setTag(trailer);
+            trailerContainer.addView(convertView);
+        }
+
+    }
+
+    public void setEntries(ReviewEntry[] reviews) {
+        mReviews = new ArrayList<ReviewEntry>(Arrays.asList(reviews));
+        ViewGroup reviewContainer = (ViewGroup) findViewById(R.id.review_container);
+        for (ReviewEntry review : reviews) {
+            View convertView = LayoutInflater.from(getBaseContext()).inflate(R.layout.review_details, reviewContainer, false);
+            // Lookup view for data population
+            TextView tvAuthor = (TextView) convertView.findViewById(R.id.review_author);
+            TextView tvContent = (TextView) convertView.findViewById(R.id.review_content);
+            tvAuthor.setText(review.author);
+            tvContent.setText(review.content);
+            convertView.setTag(review);
+            reviewContainer.addView(convertView);
+        }
+
     }
 }
