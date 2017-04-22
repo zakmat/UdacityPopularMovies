@@ -17,6 +17,10 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Created by mz on 2017-02-04.
  */
@@ -74,17 +78,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
         }
     }
 
-    public class MovieEntryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MovieEntryViewHolder extends RecyclerView.ViewHolder {
         private final String LOG_TAG = MovieEntryViewHolder.class.getSimpleName();
+        @BindView(R.id.tv_title)
         TextView movieTitleTextView;
+        @BindView(R.id.iv_thumbnail)
         ImageView posterImageView;
 
         public MovieEntryViewHolder(View rootView) {
             super(rootView);
-
-            movieTitleTextView = (TextView) rootView.findViewById(R.id.tv_title);
-            posterImageView = (ImageView) rootView.findViewById(R.id.iv_thumbnail);
-            rootView.setOnClickListener(this);
+            ButterKnife.bind(this, rootView);
         }
 
 
@@ -110,8 +113,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
             picasso.with(context).load(poster).into(posterImageView);
         }
 
-        @Override
-        public void onClick(View v) {
+        @OnClick
+        public void onClick() {
             int adapterPosition = getAdapterPosition();
             Log.e(LOG_TAG, "Clicked on position : "+ adapterPosition);
             mClickHandler.OnClick(mMovieEntries.get(adapterPosition));

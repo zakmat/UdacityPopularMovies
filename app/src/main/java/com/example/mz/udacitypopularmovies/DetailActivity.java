@@ -28,14 +28,23 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class DetailActivity extends AppCompatActivity {
 
-    private TextView mTitleTextView;
-    private TextView mReleaseDateTextView;
-    private TextView mVoteAverageTextView;
-    private TextView mPlotSynopsisTextView;
-    private ImageView mImageView;
-    private ProgressBar mLoadingIndicator;
+    @BindView(R.id.movie_title)
+    TextView mTitleTextView;
+    @BindView(R.id.movie_release_date)
+    TextView mReleaseDateTextView;
+    @BindView(R.id.movie_vote_average)
+    TextView mVoteAverageTextView;
+    @BindView(R.id.movie_plot_synopsis)
+    TextView mPlotSynopsisTextView;
+    @BindView(R.id.movie_poster)
+    ImageView mImageView;
+    @BindView(R.id.pb_review_loading_indicator)
+    ProgressBar mLoadingIndicator;
 
     private MovieEntry mMovie;
     private ArrayList<TrailerEntry> mTrailers;
@@ -46,12 +55,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        mTitleTextView = (TextView) findViewById(R.id.movie_title);
-        mReleaseDateTextView = (TextView) findViewById(R.id.movie_release_date);
-        mVoteAverageTextView = (TextView) findViewById(R.id.movie_vote_average);
-        mPlotSynopsisTextView = (TextView) findViewById(R.id.movie_plot_synopsis);
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_review_loading_indicator);
-        mImageView = (ImageView) findViewById(R.id.movie_poster);
+        ButterKnife.bind(this);
         Intent incomingIntent = getIntent();
         String extraName = MovieEntry.class.getSimpleName();
         if (incomingIntent.hasExtra(extraName)) {
@@ -189,6 +193,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
     }
+
 
     public void setEntries(ReviewEntry[] reviews) {
         mReviews = new ArrayList<ReviewEntry>(Arrays.asList(reviews));
