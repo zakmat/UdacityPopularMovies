@@ -3,9 +3,12 @@ package com.example.mz.udacitypopularmovies;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +36,7 @@ import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity {
 
+    private static final String LOG_TAG = DetailActivity.class.getSimpleName();
     @BindView(R.id.movie_title)
     TextView mTitleTextView;
     @BindView(R.id.movie_release_date)
@@ -45,6 +49,8 @@ public class DetailActivity extends AppCompatActivity {
     ImageView mImageView;
     @BindView(R.id.pb_review_loading_indicator)
     ProgressBar mLoadingIndicator;
+    @BindView(R.id.fab_favourite)
+    FloatingActionButton mFavourite;
 
     private MovieEntry mMovie;
     private ArrayList<TrailerEntry> mTrailers;
@@ -53,6 +59,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setContentView(R.layout.activity_detail);
 
         ButterKnife.bind(this);
