@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by mateusz.zak on 08.04.2017.
@@ -20,6 +21,8 @@ public class MovieProvider extends ContentProvider {
     private static final int CODE_REVIEWS = 103;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MoviesDbHelper mOpenHelper;
+
+    private static final String LOG_TAG = MovieProvider.class.getSimpleName();
 
     private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -42,8 +45,12 @@ public class MovieProvider extends ContentProvider {
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
+        Log.d(LOG_TAG, "bulkInsert invoked");
         switch (sUriMatcher.match(uri)) {
             case CODE_MOVIE:
+            case CODE_FAVOURITE_MOVIES:
+                Log.d(LOG_TAG, "... for CODE_MOVIE");
+
                 db.beginTransaction();
                 int rowsInserted = 0;
                 try {
@@ -61,7 +68,6 @@ public class MovieProvider extends ContentProvider {
                     getContext().getContentResolver().notifyChange(uri, null);
                 }
                 return rowsInserted;
-            case CODE_FAVOURITE_MOVIES:
             case CODE_REVIEWS:
             case CODE_VIDEOS:
             default:
@@ -75,6 +81,7 @@ public class MovieProvider extends ContentProvider {
         Cursor cursor;
         switch (sUriMatcher.match(uri)) {
             case CODE_MOVIE: {
+                //this is useful for checking if movie is in the favouries list
                 String movie_id = uri.getLastPathSegment();
                 String[] selectionArguments = new String[]{movie_id};
                 cursor = mOpenHelper.getReadableDatabase().query(MovieContract.MovieEntry.TABLE_NAME,
@@ -87,6 +94,7 @@ public class MovieProvider extends ContentProvider {
                 break;
             }
             case CODE_FAVOURITE_MOVIES:
+                //this is used for displaying favourites
                 cursor = mOpenHelper.getReadableDatabase().query(MovieContract.MovieEntry.TABLE_NAME,
                         projection,
                         selection,
@@ -140,6 +148,17 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        switch (sUriMatcher.match(uri)) {
+            case CODE_MOVIE: {
+                String movie_id = uri.getLastPathSegment();
+                String[] selectionArguments = new String[]{movie_id};
+                return mOpenHelper.getReadableDatabase().delete(MovieContract.MovieEntry.TABLE_NAME,
+                        MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ? ",
+                        selectionArguments);
+            }
+            case CODE_FAVOURITE_MOVIES:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
         return 0;
     }
 

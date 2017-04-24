@@ -2,6 +2,7 @@ package com.example.mz.udacitypopularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,11 +19,13 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.mz.udacitypopularmovies.data.MovieContract;
 import com.example.mz.udacitypopularmovies.data.MovieEntry;
 import com.example.mz.udacitypopularmovies.utilities.JsonUtils;
 import com.example.mz.udacitypopularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
@@ -58,8 +61,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 } else if (selectedItem.equals(getResources().getString(R.string.top_rated_value))) {
                     loadMoviesData(getResources().getString(R.string.top_rated_label), "1");
                 } else if (selectedItem.equals(getResources().getString(R.string.favourites_value))) {
-                    Toast.makeText(getBaseContext(), "Here offline movies will be shown", Toast.LENGTH_LONG).show();
-//                    loadMoviesData(getResources().getString(R.string.favourites_label), "1");
+                    loadMoviesData(getResources().getString(R.string.favourites_label), "1");
                 } else {
                     Log.e("SPINNER", "Not recognized item selected");
                 }
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                         } else if (selectedValue.equals(getResources().getString(R.string.top_rated_value))) {
                             loadMoviesData(getResources().getString(R.string.top_rated_label), nextPage);
                         }
+
 
                     }
                 }
@@ -139,6 +142,25 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 page = params[1];
             }
             String queryType = params[0];
+            Log.i(LOG_TAG, "QueryType: " + queryType + " is compared with " + R.string.favourites_label);
+            if (queryType.equals(getResources().getString(R.string.favourites_label))) {
+
+                Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        MovieContract.MovieEntry.COLUMN_TITLE);
+
+                if (cursor == null) {
+                    Log.w(LOG_TAG, "Null cursor retrieved");
+                    return null;
+                }
+                Log.i(LOG_TAG, "Retrieved non-null cursor with " + cursor.getCount() + " elements");
+
+                MovieEntry[] movieData = getDataFromCursor(cursor);
+                cursor.close();
+                return movieData;
+            }
             URL movieRequestUrl = NetworkUtils.buildMovieRequest(queryType, page);
 
             try {
@@ -156,6 +178,28 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 e.printStackTrace();
                 return null;
             }
+        }
+
+        private MovieEntry[] getDataFromCursor(Cursor cursor) {
+            if (cursor == null) {
+                Log.i(LOG_TAG, "Cursor is null");
+                return null;
+            }
+            MovieEntry[] movies = new MovieEntry[cursor.getCount()];
+            int index = 0;
+            while (cursor.moveToNext()) {
+
+                String movie_id = cursor.getString(1);
+                String title = cursor.getString(2);
+                String overview = cursor.getString(3);
+                String poster = cursor.getString(4);
+                Double voteAverage = cursor.getDouble(5);
+                Date releaseDate = new Date(cursor.getLong(6));
+
+                MovieEntry movie = new MovieEntry(Integer.valueOf(movie_id), title, overview, poster, releaseDate, voteAverage);
+                movies[index++] = movie;
+            }
+            return movies;
         }
 
         @Override

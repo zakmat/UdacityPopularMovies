@@ -83,6 +83,7 @@ public class DetailActivity extends AppCompatActivity {
         mPlotSynopsisTextView.setText(incomingEntry.overview);
         Uri poster = NetworkUtils.buildPosterRequest(342, incomingEntry.posterPath);
         Picasso.with(context).load(poster).into(mImageView);
+        mFavourite.setSelected(isFavouriteMovie(incomingEntry));
     }
 
     private void setStarRating(double voteAverage) {
@@ -107,19 +108,51 @@ public class DetailActivity extends AppCompatActivity {
         contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, incomingEntry.releaseDate.getTime());
         contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, incomingEntry.title);
         contentValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, incomingEntry.voteAverage);
+        Log.v(LOG_TAG, "Vote Average of saved movie: " + incomingEntry.voteAverage + " from Content value: " + contentValues.getAsDouble(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE));
 
         return contentValues;
     }
 
 
+
     public void onClickFavorite(View view) {
+        if (isFavouriteMovie(mMovie)) {
+            removeFromFavourites(mMovie);
+        } else {
+            addToFavourites(mMovie);
+        }
+
+    }
+
+    private boolean isFavouriteMovie(MovieEntry mMovie) {
+        Uri uriForMovie = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath(Integer.toString(mMovie.movie_id)).build();
+        Log.v(LOG_TAG, "Uri for querying CP for specific movie: " + uriForMovie.toString());
+        Cursor cursor = getContentResolver().query(uriForMovie, null, null, null, null);
+        return cursor.getCount() > 0;
+    }
+
+    private void removeFromFavourites(MovieEntry mMovie) {
+        Uri uriForMovie = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath(Integer.toString(mMovie.movie_id)).build();
+        String[] selArgs = {Integer.toString(mMovie.movie_id)};
+        int numOfDeletedRows = getContentResolver().delete(uriForMovie, null, null);
+        Log.v(LOG_TAG, "Removed movie: \"" + mMovie.title + "\" from db (" + numOfDeletedRows + " occurences)");
+        if (numOfDeletedRows > 0) {
+            Toast.makeText(getBaseContext(), "Movie removed from favourites", Toast.LENGTH_LONG).show();
+            mFavourite.setSelected(false);
+        } else {
+            Toast.makeText(getBaseContext(), "Removing from favourites failed", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void addToFavourites(MovieEntry mMovie) {
         ContentValues cv = prepareContentValues(mMovie);
         ContentValues[] values = new ContentValues[]{cv};
         if (getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI, values) > 0) {
             Toast.makeText(getBaseContext(), "Movie added to the favourites", Toast.LENGTH_LONG).show();
+            mFavourite.setSelected(true);
         } else {
-            Toast.makeText(getBaseContext(), "Insert into database failed", Toast.LENGTH_LONG).show();
-            Log.w("DETAIL_ACTIVITY", "Insert into database failed");
+            Toast.makeText(getBaseContext(), "Adding to favourites failed", Toast.LENGTH_LONG).show();
+            Log.e(LOG_TAG, "Insert into database failed");
         }
     }
 
@@ -129,43 +162,6 @@ public class DetailActivity extends AppCompatActivity {
 
     public int getMovieId() {
         return mMovie.movie_id;
-    }
-
-    public View inflate(Context context, View convertView, ViewGroup parent, Object entry) {
-        if (entry instanceof ReviewEntry) {
-            if (convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(R.layout.review_details, parent, false);
-
-                // Lookup view for data population
-                TextView tvAuthor = (TextView) convertView.findViewById(R.id.review_author);
-                TextView tvContent = (TextView) convertView.findViewById(R.id.review_content);
-                // Populate the data into the template view using the data object
-                ReviewEntry review = (ReviewEntry) entry;
-                tvAuthor.setText(review.author);
-                tvContent.setText(review.content);
-            }
-        } else if (entry instanceof TrailerEntry) {
-            if (convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(R.layout.trailer_details, parent, false);
-                convertView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        TrailerEntry trailer = (TrailerEntry) v.getTag();
-
-                        Uri builtUri = Uri.parse("http://www.youtube.com").buildUpon().appendPath("watch")
-                                .appendQueryParameter("v", trailer.key).build();
-                        Log.i("DetailActivity", builtUri.toString());
-                        startActivity(new Intent(Intent.ACTION_VIEW, builtUri));
-                    }
-                });
-            }
-            TextView tvName = (TextView) convertView.findViewById(R.id.trailer_name);
-            // Populate the data into the template view using the data object
-            TrailerEntry trailer = (TrailerEntry) entry;
-            tvName.setText(trailer.name);
-        }
-        convertView.setTag(entry);
-        return convertView;
     }
 
     private void loadReviewsData() {
@@ -186,10 +182,8 @@ public class DetailActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     TrailerEntry trailer = (TrailerEntry) v.getTag();
 
-                    Uri builtUri = Uri.parse("http://www.youtube.com").buildUpon().appendPath("watch")
-                            .appendQueryParameter("v", trailer.key).build();
-                    Log.i("DetailActivity", builtUri.toString());
-                    startActivity(new Intent(Intent.ACTION_VIEW, builtUri));
+                    Uri youtubeMovie = NetworkUtils.buildYoutubeRequest(trailer.key);
+                    startActivity(new Intent(Intent.ACTION_VIEW, youtubeMovie));
                 }
             });
             TextView tvName = (TextView) convertView.findViewById(R.id.trailer_name);
