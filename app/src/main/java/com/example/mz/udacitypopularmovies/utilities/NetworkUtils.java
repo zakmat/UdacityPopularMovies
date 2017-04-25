@@ -3,6 +3,7 @@ package com.example.mz.udacitypopularmovies.utilities;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.mz.udacitypopularmovies.BuildConfig;
 import com.example.mz.udacitypopularmovies.data.ReviewEntry;
 import com.example.mz.udacitypopularmovies.data.TrailerEntry;
 
@@ -34,8 +35,7 @@ public final class NetworkUtils {
     private static final String LANGUAGE_PARAM = "language";
     private static final String PAGE_PARAM = "page";
 
-    //TODO: Please enter here your api-key
-    private static final String apiKey = "";
+    private static final String apiKey = BuildConfig.TMDB_API_TOKEN;
     private static final String language = "en-US";
 
     public static Uri buildPosterRequest(Integer requestedSize, String posterPath) {
