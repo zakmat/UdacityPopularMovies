@@ -115,4 +115,11 @@ public final class NetworkUtils {
             urlConnection.disconnect();
         }
     }
+
+    public static Uri buildYoutubeRequest(String key) {
+        Uri builtUri = Uri.parse("http://www.youtube.com").buildUpon().appendPath("watch")
+                .appendQueryParameter("v", key).build();
+        Log.i("DetailActivity", builtUri.toString());
+        return builtUri;
+    }
 }
