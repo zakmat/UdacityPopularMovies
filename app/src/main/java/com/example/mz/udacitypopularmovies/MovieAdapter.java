@@ -99,18 +99,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
             MovieEntry entry = mMovieEntries.get(position);
             Uri poster = NetworkUtils.buildPosterRequest(MEDIUM_SIZE, entry.posterPath);
             movieTitleTextView.setText(entry.title);
-            Context context = super.itemView.getContext();
-            Picasso picasso = new Picasso.Builder(context)
-                    .listener(new Picasso.Listener() {
-                        @Override
-                        public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
-                            //Here your log
-                            exception.printStackTrace();
-                        }
-                    })
-                    .build();
+            Context context = super.itemView.getContext().getApplicationContext();
             Log.i(LOG_TAG, "bind movie: \"" + entry.title + "\"");
-            picasso.with(context).load(poster).into(posterImageView);
+            Picasso.with(context).load(poster).into(posterImageView);
         }
 
         @OnClick
