@@ -115,9 +115,10 @@
                 android:textSize="@dimen/reviews_text_size"
                 tools:text="@string/placeholder_lorem_ipsum"/>
 
-            <include layout="@layout/activity_reviews" />
+            <include layout="@layout/fragment_trailers"/>
 
-            <include layout="@layout/activity_videos" />
+            <include layout="@layout/fragment_reviews"/>
+
         </LinearLayout>
 
         <ProgressBar

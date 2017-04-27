@@ -122,4 +122,10 @@ public final class NetworkUtils {
         Log.i("DetailActivity", builtUri.toString());
         return builtUri;
     }
+
+    public static Uri buildYoutubeThumbnail(String key) {
+        Uri builtUri = Uri.parse("http://img.youtube.com/vi").buildUpon().appendPath(key).appendPath("default.jpg").build();
+        Log.i("DetailActivity", builtUri.toString());
+        return builtUri;
+    }
 }

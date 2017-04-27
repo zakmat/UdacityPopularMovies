@@ -11,14 +11,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reviews_label"
-        style="@style/Base.TextAppearance.AppCompat.Headline" />
+        style="@style/HeadLine" />
 
     <View style="@style/Divider" />
 
-    <LinearLayout
-        android:id="@+id/reviews_container"
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_reviews"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="@string/placeholder_lorem_ipsum"
-        android:orientation="vertical" />
+        android:layout_height="match_parent" />
+
 </LinearLayout>

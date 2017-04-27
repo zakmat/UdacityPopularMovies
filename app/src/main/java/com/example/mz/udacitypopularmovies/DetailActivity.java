@@ -9,13 +9,13 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,9 +27,6 @@ import com.example.mz.udacitypopularmovies.data.TrailerEntry;
 import com.example.mz.udacitypopularmovies.utilities.FetchTask;
 import com.example.mz.udacitypopularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,10 +48,14 @@ public class DetailActivity extends AppCompatActivity {
     ProgressBar mLoadingIndicator;
     @BindView(R.id.fab_favourite)
     FloatingActionButton mFavourite;
+    @BindView(R.id.rv_reviews)
+    RecyclerView rv_reviews;
+    @BindView(R.id.rv_trailers)
+    RecyclerView rv_trailers;
 
     private MovieEntry mMovie;
-    private ArrayList<TrailerEntry> mTrailers;
-    private ArrayList<ReviewEntry> mReviews;
+    private ReviewAdapter reviewAdapter;
+    private TrailerAdapter trailerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,17 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         ButterKnife.bind(this);
+
+        GridLayoutManager gridLayout = new GridLayoutManager(this, 1);
+        rv_reviews.setLayoutManager(gridLayout);
+        reviewAdapter = new ReviewAdapter();
+        rv_reviews.setAdapter(reviewAdapter);
+
+        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rv_trailers.setLayoutManager(horizontalLayoutManager);
+        trailerAdapter = new TrailerAdapter();
+        rv_trailers.setAdapter(trailerAdapter);
+
         Intent incomingIntent = getIntent();
         String extraName = MovieEntry.class.getSimpleName();
         if (incomingIntent.hasExtra(extraName)) {
@@ -112,8 +124,6 @@ public class DetailActivity extends AppCompatActivity {
 
         return contentValues;
     }
-
-
 
     public void onClickFavorite(View view) {
         if (isFavouriteMovie(mMovie)) {
@@ -173,42 +183,10 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public void setEntries(TrailerEntry[] trailers) {
-        mTrailers = new ArrayList<TrailerEntry>(Arrays.asList(trailers));
-        LinearLayout trailerContainer = (LinearLayout) findViewById(R.id.trailer_container);
-        for (TrailerEntry trailer : trailers) {
-            View convertView = LayoutInflater.from(getBaseContext()).inflate(R.layout.trailer_details, trailerContainer, false);
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TrailerEntry trailer = (TrailerEntry) v.getTag();
-
-                    Uri youtubeMovie = NetworkUtils.buildYoutubeRequest(trailer.key);
-                    startActivity(new Intent(Intent.ACTION_VIEW, youtubeMovie));
-                }
-            });
-            TextView tvName = (TextView) convertView.findViewById(R.id.trailer_name);
-            // Populate the data into the template view using the data object
-            tvName.setText(trailer.name);
-            convertView.setTag(trailer);
-            trailerContainer.addView(convertView);
-        }
-
+        trailerAdapter.setTrailerData(trailers);
     }
 
-
     public void setEntries(ReviewEntry[] reviews) {
-        mReviews = new ArrayList<ReviewEntry>(Arrays.asList(reviews));
-        ViewGroup reviewContainer = (ViewGroup) findViewById(R.id.review_container);
-        for (ReviewEntry review : reviews) {
-            View convertView = LayoutInflater.from(getBaseContext()).inflate(R.layout.review_details, reviewContainer, false);
-            // Lookup view for data population
-            TextView tvAuthor = (TextView) convertView.findViewById(R.id.review_author);
-            TextView tvContent = (TextView) convertView.findViewById(R.id.review_content);
-            tvAuthor.setText(review.author);
-            tvContent.setText(review.content);
-            convertView.setTag(review);
-            reviewContainer.addView(convertView);
-        }
-
+        reviewAdapter.setReviewData(reviews);
     }
 }
