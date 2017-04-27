@@ -5,8 +5,18 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorSecondary</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
+    <style name="StarRatingStyle">
+       <item name="android:layout_width">wrap_content</item>
+       <item name="android:layout_height">24dp</item>
+       <item name="android:tint">@color/colorSecondary</item>
+       <item name="android:src">@drawable/star_off_24px </item>
+    </style>
+    <style name="HeadLine" parent="Base.TextAppearance.AppCompat.Headline">
+        <item name="android:textSize">@dimen/abc_text_size_headline_material</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
 </resources>

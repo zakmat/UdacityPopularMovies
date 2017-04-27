@@ -8,4 +8,8 @@
     <dimen name="trailers_text_size">16sp</dimen>
     <dimen name="reviews_header_text_size">24sp</dimen>
     <dimen name="trailers_header_text_size">24sp</dimen>
+    <dimen name="trailers_caption_padding">4dp</dimen>
+    <dimen name="trailer_thumbnail_height">104dp</dimen>
+    <dimen name="trailer_thumbnail_width">144dp</dimen>
+    <dimen name="trailer_thumbnail_padding">4dp</dimen>
 </resources>

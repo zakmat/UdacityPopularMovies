@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/activity_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:context="com.example.mz.udacitypopularmovies.DetailActivity">
+                      xmlns:tools="http://schemas.android.com/tools"
+                      android:id="@+id/activity_detail"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      tools:context="com.example.mz.udacitypopularmovies.DetailActivity">
 
             <TextView
                 android:id="@+id/movie_title"
+                style="@style/HeadLine"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Headline"
-                tools:text="@string/placeholder_movie_title" />
+                tools:text="@string/placeholder_movie_title"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                     android:id="@+id/movie_poster"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/placeholder_movie_poster" />
+                    android:contentDescription="@string/placeholder_movie_poster"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -44,19 +44,19 @@
 
                     <TextView
                         android:id="@+id/movie_release_date"
+                        style="@style/Base.TextAppearance.AppCompat.Caption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
-                        style="@style/Base.TextAppearance.AppCompat.Caption"
-                        tools:text="@string/placeholder_release_date" />
+                        tools:text="@string/placeholder_release_date"/>
 
                     <TextView
                         android:id="@+id/movie_vote_average"
+                        style="@style/Base.TextAppearance.AppCompat.Caption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
-                        style="@style/Base.TextAppearance.AppCompat.Caption"
-                        tools:text="@string/placeholder_vote_average" />
+                        tools:text="@string/placeholder_vote_average"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -65,38 +65,24 @@
 
                         <ImageView
                             android:id="@+id/movie_rating_star1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="24dp"
-                            android:tint="@color/colorAccent"
-                            app:srcCompat="@drawable/star_off_24px" />
+                            style="@style/StarRatingStyle"
+                            />
 
                         <ImageView
                             android:id="@+id/movie_rating_star2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="24dp"
-                            android:tint="@color/colorAccent"
-                            app:srcCompat="@drawable/star_off_24px" />
+                            style="@style/StarRatingStyle"/>
 
                         <ImageView
                             android:id="@+id/movie_rating_star3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="24dp"
-                            android:tint="@color/colorAccent"
-                            app:srcCompat="@drawable/star_off_24px" />
+                            style="@style/StarRatingStyle"/>
 
                         <ImageView
                             android:id="@+id/movie_rating_star4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="24dp"
-                            android:tint="@color/colorAccent"
-                            app:srcCompat="@drawable/star_off_24px" />
+                            style="@style/StarRatingStyle"/>
 
                         <ImageView
                             android:id="@+id/movie_rating_star5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="24dp"
-                            android:tint="@color/colorAccent"
-                            app:srcCompat="@drawable/star_off_24px" />
+                            style="@style/StarRatingStyle"/>
                     </LinearLayout>
 
                     <android.support.design.widget.FloatingActionButton
@@ -104,10 +90,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:clickable="true"
+                        android:onClick="onClickFavorite"
                         android:tint="@color/colorPrimary"
                         app:fabSize="mini"
-                        app:srcCompat="@drawable/favourite_24px"
-                        android:onClick="onClickFavorite" />
+                        app:srcCompat="@drawable/favourite_24px"/>
 
 
                 </LinearLayout>
@@ -115,11 +101,11 @@
 
             <TextView
                 android:id="@+id/movie_plot_synopsis"
+                style="@style/Base.TextAppearance.AppCompat.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                style="@style/Base.TextAppearance.AppCompat.Caption"
-                tools:text="@string/placeholder_plot_synopsis" />
+                tools:text="@string/placeholder_plot_synopsis"/>
 
             <TextView
                 android:id="@+id/movie_reviews"
@@ -127,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:textSize="@dimen/reviews_text_size"
-                tools:text="@string/placeholder_lorem_ipsum" />
+                tools:text="@string/placeholder_lorem_ipsum"/>
 
             <include layout="@layout/activity_reviews" />
 
@@ -139,6 +125,6 @@
             android:layout_width="42dp"
             android:layout_height="42dp"
             android:layout_gravity="center"
-            android:visibility="invisible" />
+            android:visibility="invisible"/>
     </FrameLayout>
 </ScrollView>
