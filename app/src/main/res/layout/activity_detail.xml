@@ -65,23 +65,28 @@
 
                         <ImageView
                             android:id="@+id/movie_rating_star1"
+                            app:srcCompat="@drawable/star_border_24dp"
                             style="@style/StarRatingStyle"
                             />
 
                         <ImageView
                             android:id="@+id/movie_rating_star2"
+                            app:srcCompat="@drawable/star_border_24dp"
                             style="@style/StarRatingStyle"/>
 
                         <ImageView
                             android:id="@+id/movie_rating_star3"
-                            style="@style/StarRatingStyle"/>
+                            style="@style/StarRatingStyle"
+                            app:srcCompat="@drawable/star_border_24dp"/>
 
                         <ImageView
                             android:id="@+id/movie_rating_star4"
+                            app:srcCompat="@drawable/star_border_24dp"
                             style="@style/StarRatingStyle"/>
 
                         <ImageView
                             android:id="@+id/movie_rating_star5"
+                            app:srcCompat="@drawable/star_border_24dp"
                             style="@style/StarRatingStyle"/>
                     </LinearLayout>
 

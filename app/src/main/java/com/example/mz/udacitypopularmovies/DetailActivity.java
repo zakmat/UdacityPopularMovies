@@ -99,17 +99,27 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void setStarRating(double voteAverage) {
-        int starRates = (int) Math.round(voteAverage / 2.0);
-        if (starRates > 0)
-            ((ImageView) findViewById(R.id.movie_rating_star1)).setImageResource(R.drawable.star_on_24px);
-        if (starRates > 1)
-            ((ImageView) findViewById(R.id.movie_rating_star2)).setImageResource(R.drawable.star_on_24px);
-        if (starRates > 2)
-            ((ImageView) findViewById(R.id.movie_rating_star3)).setImageResource(R.drawable.star_on_24px);
-        if (starRates > 3)
-            ((ImageView) findViewById(R.id.movie_rating_star4)).setImageResource(R.drawable.star_on_24px);
-        if (starRates > 4)
-            ((ImageView) findViewById(R.id.movie_rating_star5)).setImageResource(R.drawable.star_on_24px);
+        long rating = Math.round(voteAverage);
+        if (rating == 1)
+            ((ImageView) findViewById(R.id.movie_rating_star1)).setImageResource(R.drawable.star_half_24dp);
+        if (rating >= 2)
+            ((ImageView) findViewById(R.id.movie_rating_star1)).setImageResource(R.drawable.star_full_24dp);
+        if (rating == 3)
+            ((ImageView) findViewById(R.id.movie_rating_star2)).setImageResource(R.drawable.star_half_24dp);
+        if (rating >= 4)
+            ((ImageView) findViewById(R.id.movie_rating_star2)).setImageResource(R.drawable.star_full_24dp);
+        if (rating == 5)
+            ((ImageView) findViewById(R.id.movie_rating_star3)).setImageResource(R.drawable.star_half_24dp);
+        if (rating >= 6)
+            ((ImageView) findViewById(R.id.movie_rating_star3)).setImageResource(R.drawable.star_full_24dp);
+        if (rating == 7)
+            ((ImageView) findViewById(R.id.movie_rating_star4)).setImageResource(R.drawable.star_half_24dp);
+        if (rating >= 8)
+            ((ImageView) findViewById(R.id.movie_rating_star4)).setImageResource(R.drawable.star_full_24dp);
+        if (rating == 9)
+            ((ImageView) findViewById(R.id.movie_rating_star5)).setImageResource(R.drawable.star_half_24dp);
+        if (rating >= 10)
+            ((ImageView) findViewById(R.id.movie_rating_star5)).setImageResource(R.drawable.star_full_24dp);
     }
 
     private ContentValues prepareContentValues(MovieEntry incomingEntry) {
