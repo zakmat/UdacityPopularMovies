@@ -106,8 +106,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
                 return;
             }
             Uri youtubeMovie = NetworkUtils.buildYoutubeRequest(trailer.key);
-            super.itemView.getContext().startActivity(new Intent(Intent.ACTION_VIEW, youtubeMovie));
-
+            Intent viewTrailerIntent = new Intent(Intent.ACTION_VIEW, youtubeMovie);
+            if (viewTrailerIntent.resolveActivity(super.itemView.getContext().getPackageManager()) != null) {
+               super.itemView.getContext().startActivity(viewTrailerIntent);
+            }
         }
     }
 }
