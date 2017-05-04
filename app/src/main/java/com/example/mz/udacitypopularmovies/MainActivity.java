@@ -139,6 +139,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mSpinner.getSelectedItem().toString().equals(getResources().getString(R.string.favourites_value))) {
+            loadMoviesData(getResources().getString(R.string.favourites_label), "1");
+        }
+    }
+
     private void loadMoviesData(String queryType, String page) {
         Bundle queryBundle = new Bundle();
         queryBundle.putString(QUERY_TYPE, queryType);
