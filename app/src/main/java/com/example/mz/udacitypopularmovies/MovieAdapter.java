@@ -15,7 +15,6 @@ import com.example.mz.udacitypopularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +31,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
     private ArrayList<MovieEntry> mMovieEntries;
     private final MovieAdapterOnClickHandler mClickHandler;
 
+    public ArrayList<MovieEntry> getItems() {
+        return mMovieEntries;
+    }
+
     public interface MovieAdapterOnClickHandler {
         void OnClick(MovieEntry entry);
     }
@@ -40,15 +43,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieEntryVi
         mClickHandler = clickHandler;
     }
 
-    public void setMovieData(MovieEntry[] movieData) {
+    public void setMovieData(ArrayList<MovieEntry> movieData) {
         Log.i(LOG_TAG, "before setMovieData there is " + getItemCount() + " elements in a view");
         if (movieData == null) {
             mMovieEntries = null;
-        } else if (mMovieEntries == null){
-            mMovieEntries = new ArrayList<>(Arrays.asList(movieData));
+        } else if (mMovieEntries == null) {
+            mMovieEntries = movieData;
         }
         else {
-           mMovieEntries.addAll(Arrays.asList(movieData));
+            mMovieEntries.addAll(movieData);
         }
         notifyDataSetChanged();
         Log.i(LOG_TAG, "after setMovieData there is " + getItemCount() + " elements in a view");

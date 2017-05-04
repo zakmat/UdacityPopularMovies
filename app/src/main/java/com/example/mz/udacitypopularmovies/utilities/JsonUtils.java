@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 /**
  * Created by mz on 2017-02-04.
@@ -51,7 +52,7 @@ public final class JsonUtils {
      *
      * @throws JSONException If JSON data cannot be properly parsed
      */
-    public static MovieEntry[] getFullMovieDataFromJson(Context context, String movieJsonStr)
+    public static ArrayList<MovieEntry> getFullMovieDataFromJson(Context context, String movieJsonStr)
             throws JSONException {
 
         /* Weather information. Each day's forecast info is an element of the "list" array */
@@ -81,7 +82,7 @@ public final class JsonUtils {
         }
 
         JSONArray movieArray = movieJson.getJSONArray(RESULTS);
-        MovieEntry[]  parsedMoviesData = new MovieEntry[movieArray.length()];
+        ArrayList<MovieEntry> parsedMoviesData = new ArrayList<MovieEntry>(movieArray.length());
 
         for (int i = 0; i < movieArray.length(); i++) {
             JSONObject movie = movieArray.getJSONObject(i);
@@ -101,7 +102,7 @@ public final class JsonUtils {
 
             double votesAverage = movie.getDouble(RATING);
 
-            parsedMoviesData[i] = new MovieEntry(movie_id, title, overview, poster, releaseDate, votesAverage);
+            parsedMoviesData.add(new MovieEntry(movie_id, title, overview, poster, releaseDate, votesAverage));
             String relDateString = releaseDate != null ? releaseDate.toString() : "????-??-??";
             Log.i(TAG, title + " " + relDateString + " " + poster);
         }

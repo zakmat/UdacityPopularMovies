@@ -1,10 +1,9 @@
 package com.example.mz.udacitypopularmovies;
 
+import android.content.Context;
 import android.database.Cursor;
-import android.os.AsyncTask;
+import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.example.mz.udacitypopularmovies.data.MovieContract;
 import com.example.mz.udacitypopularmovies.data.MovieEntry;
@@ -12,42 +11,35 @@ import com.example.mz.udacitypopularmovies.utilities.JsonUtils;
 import com.example.mz.udacitypopularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * Created by mateusz.zak on 03.05.2017.
  */
-public class FetchMoviesTask extends AsyncTask<String, Void, MovieEntry[]> {
-    private MainActivity mainActivity;
+public class FetchMoviesTask extends AsyncTaskLoader<ArrayList<MovieEntry>> {
+    private final String mPage;
+    private final String mQueryType;
     private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
-    public FetchMoviesTask(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
+    public FetchMoviesTask(Context context, String queryType, String page) {
+        super(context);
+        mQueryType = queryType;
+        mPage = page;
     }
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        mainActivity.mLoadingIndicator.setVisibility(View.VISIBLE);
+    protected void onStartLoading() {
+        super.onStartLoading();
+        //mLoadingIndicator.setVisibility(View.VISIBLE);
     }
 
     @Override
-    protected MovieEntry[] doInBackground(String... params) {
+    public ArrayList<MovieEntry> loadInBackground() {
+        Log.i(LOG_TAG, "QueryType: " + mQueryType + " is compared with " + super.getContext().getResources().getString(R.string.favourites_label));
+        if (mQueryType.equals(super.getContext().getResources().getString(R.string.favourites_label))) {
 
-        if (params.length == 0) {
-            return null;
-        }
-        String page;
-        if (params.length == 1) {
-            page = "1";
-        } else {
-            page = params[1];
-        }
-        String queryType = params[0];
-        Log.i(LOG_TAG, "QueryType: " + queryType + " is compared with " + mainActivity.getResources().getString(R.string.favourites_label));
-        if (queryType.equals(mainActivity.getResources().getString(R.string.favourites_label))) {
-
-            Cursor cursor = mainActivity.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+            Cursor cursor = super.getContext().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
                     null,
                     null,
                     null,
@@ -59,11 +51,11 @@ public class FetchMoviesTask extends AsyncTask<String, Void, MovieEntry[]> {
             }
             Log.i(LOG_TAG, "Retrieved non-null cursor with " + cursor.getCount() + " elements");
 
-            MovieEntry[] movieData = getDataFromCursor(cursor);
+            ArrayList<MovieEntry> movieData = getDataFromCursor(cursor);
             cursor.close();
             return movieData;
         }
-        URL movieRequestUrl = NetworkUtils.buildMovieRequest(queryType, page);
+        URL movieRequestUrl = NetworkUtils.buildMovieRequest(mQueryType, mPage);
 
         try {
             String jsonMovieResponse = NetworkUtils
@@ -71,8 +63,8 @@ public class FetchMoviesTask extends AsyncTask<String, Void, MovieEntry[]> {
 
             Log.i(LOG_TAG, "Retrieved " + jsonMovieResponse.length() + " bytes of data");
 
-            MovieEntry[] movieData = JsonUtils
-                    .getFullMovieDataFromJson(mainActivity, jsonMovieResponse);
+            ArrayList<MovieEntry> movieData = JsonUtils
+                    .getFullMovieDataFromJson(super.getContext(), jsonMovieResponse);
 
             return movieData;
 
@@ -82,12 +74,12 @@ public class FetchMoviesTask extends AsyncTask<String, Void, MovieEntry[]> {
         }
     }
 
-    private MovieEntry[] getDataFromCursor(Cursor cursor) {
+    private ArrayList<MovieEntry> getDataFromCursor(Cursor cursor) {
         if (cursor == null) {
             Log.i(LOG_TAG, "Cursor is null");
             return null;
         }
-        MovieEntry[] movies = new MovieEntry[cursor.getCount()];
+        ArrayList<MovieEntry> movies = new ArrayList<MovieEntry>(cursor.getCount());
         int index = 0;
         while (cursor.moveToNext()) {
 
@@ -99,18 +91,9 @@ public class FetchMoviesTask extends AsyncTask<String, Void, MovieEntry[]> {
             Date releaseDate = new Date(cursor.getLong(6));
 
             MovieEntry movie = new MovieEntry(Integer.valueOf(movie_id), title, overview, poster, releaseDate, voteAverage);
-            movies[index++] = movie;
+            movies.add(index, movie);
+            index++;
         }
         return movies;
-    }
-
-    @Override
-    protected void onPostExecute(MovieEntry[] movieData) {
-        mainActivity.mLoadingIndicator.setVisibility(View.INVISIBLE);
-        if (movieData != null) {
-            mainActivity.mMovieAdapter.setMovieData(movieData);
-        } else {
-            Toast.makeText(mainActivity.getApplicationContext(), R.string.fetch_error_message, Toast.LENGTH_LONG).show();
-        }
     }
 }
