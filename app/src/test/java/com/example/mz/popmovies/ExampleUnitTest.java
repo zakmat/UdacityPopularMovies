@@ -1,4 +1,4 @@
-package com.example.mz.udacitypopularmovies;
+package com.mz.popmovies;
 
 import org.junit.Test;
 

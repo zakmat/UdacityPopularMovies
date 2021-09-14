@@ -3,11 +3,10 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
-              tools:context="com.example.mz.udacitypopularmovies.MainActivity">
+              tools:context="com.mz.popmovies.MainActivity">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:title="@string/app_name"
         android:layout_width="match_parent"
@@ -24,14 +23,14 @@
             android:gravity="right" />
 
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_posters"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

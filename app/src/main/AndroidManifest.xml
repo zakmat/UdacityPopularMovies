@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mz.udacitypopularmovies">
+    package="com.mz.popmovies">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
         <activity
 
-            android:name=".MainActivity"
+            android:name="com.mz.popmovies.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:launchMode="singleTop">
@@ -22,20 +22,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailActivity" />
+        <activity android:name="com.mz.popmovies.DetailActivity" />
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.mz.popmovies.SettingsActivity"
             android:label="@string/action_settings"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName="com.mz.popmovies.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="com.mz.popmovies.MainActivity" />
         </activity>
 
         <provider
-            android:authorities="com.example.mz.udacitypopularmovies"
+            android:authorities="com.mz.popmovies"
             android:multiprocess="false"
-            android:name="com.example.mz.udacitypopularmovies.data.MovieProvider" />
+            android:name="com.mz.popmovies.data.MovieProvider" />
     </application>
 
 </manifest>
