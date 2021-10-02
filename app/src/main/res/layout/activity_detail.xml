@@ -111,7 +111,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 tools:text="@string/placeholder_plot_synopsis"/>
-
             <TextView
                 android:id="@+id/movie_reviews"
                 android:layout_width="match_parent"
@@ -120,10 +119,50 @@
                 android:textSize="@dimen/reviews_text_size"
                 tools:text="@string/placeholder_lorem_ipsum"/>
 
-            <include layout="@layout/fragment_trailers"/>
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <include layout="@layout/fragment_reviews"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/videos_label"
+                    style="@style/HeadLine"
+                    android:textSize="@dimen/trailers_header_text_size" />
 
+                <View style="@style/Divider" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_trailers"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/review_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/movie_reviews_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reviews_label"
+                    style="@style/HeadLine" />
+
+                <View style="@style/Divider" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_reviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <ProgressBar

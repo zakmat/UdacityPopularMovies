@@ -93,11 +93,11 @@ object JsonUtils {
 
     @JvmStatic
     @Throws(JSONException::class)
-    fun <CustomEntry> getEntriesFromJson(klass: Class<CustomEntry>, detailActivity: DetailActivity?, jsonRequest: String?): Array<CustomEntry>? {
+    fun <CustomEntry> getEntriesFromJson(klass: Class<CustomEntry>, detailActivity: DetailActivity?, jsonRequest: String?): List<CustomEntry>? {
         if (klass == ReviewEntry::class.java) {
-            return getReviewsDataFromJson(detailActivity, jsonRequest)?.toArray() as Array<CustomEntry>?
+            return getReviewsDataFromJson(detailActivity, jsonRequest)?.map {it as CustomEntry}
         } else if (klass == TrailerEntry::class.java) {
-            return getTrailersDataFromJson(detailActivity, jsonRequest)?.toArray() as Array<CustomEntry>?
+            return getTrailersDataFromJson(detailActivity, jsonRequest)?.map{it as CustomEntry}
         }
         Log.i(TAG, "No known JSON parser for class " + klass.simpleName)
         return null

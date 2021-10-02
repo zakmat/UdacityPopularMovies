@@ -23,7 +23,7 @@ import com.mz.popmovies.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<ArrayList<MovieEntry>?>,
     MovieAdapterOnClickHandler {
-    private var mMovieAdapter: MovieAdapter? = null
+    private lateinit var mMovieAdapter: MovieAdapter
     private lateinit var binding: ActivityMainBinding
 
     public override fun onSaveInstanceState(outState: Bundle) {
@@ -31,14 +31,14 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<ArrayLis
         super.onSaveInstanceState(outState)
         outState.putInt(SELECTED_CATEGORY, binding.spinner.selectedItemPosition)
         outState.putParcelable(GRID_STATE, binding.rvPosters.layoutManager!!.onSaveInstanceState())
-        outState.putParcelableArrayList(SELECTED_MOVIES, mMovieAdapter!!.items)
+        outState.putParcelableArrayList(SELECTED_MOVIES, mMovieAdapter.items)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         val savedMovies: ArrayList<MovieEntry> =
             savedInstanceState.getParcelableArrayList(SELECTED_MOVIES)!!
-        mMovieAdapter!!.setMovieData(savedMovies)
+        mMovieAdapter.setMovieData(savedMovies)
         Log.d(LOG_TAG, "onRestoreInstanceState called")
     }
 
@@ -125,11 +125,11 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<ArrayLis
         val queryBundle = Bundle()
         queryBundle.putString(QUERY_TYPE, queryType)
         queryBundle.putString(PAGE_NUM, page)
-        val loaderManager = supportLoaderManager
+        val loaderManager = LoaderManager.getInstance(this)
         val movieLoader = loaderManager.getLoader<ArrayList<MovieEntry>>(MOVIE_LOADER_ID)
         if (page == "1") {
             //reset movies upon changing category
-            mMovieAdapter!!.setMovieData(null)
+            mMovieAdapter.setMovieData(null)
         }
         if (movieLoader == null) {
             loaderManager.initLoader(MOVIE_LOADER_ID, queryBundle, this).forceLoad()
@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<ArrayLis
     ) {
         binding.pbLoadingIndicator.visibility = View.INVISIBLE
         if (movieData != null) {
-            mMovieAdapter!!.setMovieData(movieData)
+            mMovieAdapter.setMovieData(movieData)
         } else {
             Toast.makeText(applicationContext, R.string.fetch_error_message, Toast.LENGTH_LONG)
                 .show()

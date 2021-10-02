@@ -57,12 +57,13 @@ class TrailerAdapter : RecyclerView.Adapter<TrailerAdapter.ViewHolder>() {
             }
             val trailer = mTrailers!![position]
             val thumbnailLink = buildYoutubeThumbnail(trailer.key)
-            val context = super.itemView.context.applicationContext
             Picasso.get().load(thumbnailLink).placeholder(R.mipmap.placeholder).into(binding.trailerIcon)
             binding.trailerName.text = trailer.name
+            binding.root.setOnClickListener{
+                openYoutubeTrailer()
+            }
         }
 
-//        @OnClick
         fun openYoutubeTrailer() {
             val adapterPosition = adapterPosition
             Log.e(LOG_TAG, "Clicked on position : $adapterPosition")
@@ -71,6 +72,9 @@ class TrailerAdapter : RecyclerView.Adapter<TrailerAdapter.ViewHolder>() {
             val viewTrailerIntent = Intent(Intent.ACTION_VIEW, youtubeMovie)
             if (viewTrailerIntent.resolveActivity(super.itemView.context.packageManager) != null) {
                 super.itemView.context.startActivity(viewTrailerIntent)
+            }
+            else {
+                Log.w(LOG_TAG, "Youtube activity not resolved")
             }
         }
     }

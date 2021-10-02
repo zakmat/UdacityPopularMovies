@@ -106,7 +106,7 @@ object NetworkUtils {
 
     @JvmStatic
     fun buildYoutubeRequest(key: String?): Uri {
-        val builtUri = Uri.parse("http://www.youtube.com").buildUpon().appendPath("watch")
+        val builtUri = Uri.parse("https://www.youtube.com").buildUpon().appendPath("watch")
                 .appendQueryParameter("v", key).build()
         Log.i("DetailActivity", builtUri.toString())
         return builtUri
@@ -114,7 +114,7 @@ object NetworkUtils {
 
     @JvmStatic
     fun buildYoutubeThumbnail(key: String?): Uri {
-        val builtUri = Uri.parse("http://img.youtube.com/vi").buildUpon().appendPath(key).appendPath("default.jpg").build()
+        val builtUri = Uri.parse("https://img.youtube.com/vi").buildUpon().appendPath(key).appendPath("default.jpg").build()
         Log.i("DetailActivity", builtUri.toString())
         return builtUri
     }

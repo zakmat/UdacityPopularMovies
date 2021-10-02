@@ -15,14 +15,14 @@ import java.lang.Exception
 /**
  * Created by mateusz.zak on 08.04.2017.
  */
-class FetchTask<CustomEntry>(private val entryClass: Class<CustomEntry>, private val detailActivity: DetailActivity) : AsyncTask<Void, Void, Array<CustomEntry>?>() {
+class FetchTask<CustomEntry>(private val entryClass: Class<CustomEntry>, private val detailActivity: DetailActivity) : AsyncTask<Void, Void, List<CustomEntry>?>() {
     private val LOG_TAG = FetchTask::class.java.simpleName
     override fun onPreExecute() {
         super.onPreExecute()
         detailActivity.showLoadingIndicator(true)
     }
 
-    protected override fun doInBackground(vararg params: Void): Array<CustomEntry>? {
+    protected override fun doInBackground(vararg params: Void): List<CustomEntry>? {
         val networkRequest = buildMovieRequest(entryClass, detailActivity.movieId)
         return try {
             val networkResponse = getResponseFromHttpUrl(networkRequest!!)
@@ -35,13 +35,15 @@ class FetchTask<CustomEntry>(private val entryClass: Class<CustomEntry>, private
         }
     }
 
-    override fun onPostExecute(entries: Array<CustomEntry>?) {
+    override fun onPostExecute(entries: List<CustomEntry>?) {
         detailActivity.showLoadingIndicator(false)
         if (entries != null) {
             if (entryClass == ReviewEntry::class.java) {
-//                detailActivity.setEntries(entries as Array<ReviewEntry>?)
+                val reviews = entries?.map {it as ReviewEntry}
+                detailActivity.setEntries(reviews.toTypedArray())
             } else if (entryClass == TrailerEntry::class.java) {
-//                detailActivity.setEntries(entries as Array<TrailerEntry>?)
+                val trailers = entries?.map {it as TrailerEntry}
+                detailActivity.setEntries(trailers.toTypedArray())
             } else {
                 Log.v(LOG_TAG, "Invalid class type:  " + entryClass.simpleName)
             }
