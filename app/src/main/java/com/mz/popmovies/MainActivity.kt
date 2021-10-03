@@ -21,7 +21,7 @@ import com.mz.popmovies.MovieAdapter.MovieAdapterOnClickHandler
 import com.mz.popmovies.data.MovieEntry
 import com.mz.popmovies.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<ArrayList<MovieEntry>?>,
+class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<MovieEntry>>,
     MovieAdapterOnClickHandler {
     private lateinit var mMovieAdapter: MovieAdapter
     private lateinit var binding: ActivityMainBinding
@@ -161,7 +161,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<ArrayLis
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<ArrayList<MovieEntry>?> {
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<MovieEntry>> {
         val queryType = args!!.getString(QUERY_TYPE)
         val pageNumber = args.getString(PAGE_NUM)
         Log.v(LOG_TAG, "OnCreateLoader called")
@@ -169,19 +169,14 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<ArrayLis
     }
 
     override fun onLoadFinished(
-        loader: Loader<ArrayList<MovieEntry>?>,
-        movieData: ArrayList<MovieEntry>?
+        loader: Loader<List<MovieEntry>>,
+        movieData: List<MovieEntry>
     ) {
         binding.pbLoadingIndicator.visibility = View.INVISIBLE
-        if (movieData != null) {
-            mMovieAdapter.setMovieData(movieData)
-        } else {
-            Toast.makeText(applicationContext, R.string.fetch_error_message, Toast.LENGTH_LONG)
-                .show()
-        }
+        mMovieAdapter.setMovieData(movieData)
     }
 
-    override fun onLoaderReset(loader: Loader<ArrayList<MovieEntry>?>) {
+    override fun onLoaderReset(loader: Loader<List<MovieEntry>>) {
         Log.v(LOG_TAG, "OnLoaderReset called")
     }
 

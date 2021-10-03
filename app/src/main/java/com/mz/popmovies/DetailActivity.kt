@@ -1,9 +1,7 @@
 package com.mz.popmovies
 
 import android.content.ContentValues
-import android.content.Context
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -14,12 +12,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mz.popmovies.data.MovieContract
 import com.mz.popmovies.data.MovieEntry
-import com.mz.popmovies.data.ReviewEntry
-import com.mz.popmovies.data.TrailerEntry
+import com.mz.popmovies.data.remote.MoviesService
 import com.mz.popmovies.databinding.ActivityDetailBinding
-import com.mz.popmovies.utilities.FetchTask
 import com.mz.popmovies.utilities.NetworkUtils
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.runBlocking
 import kotlin.math.roundToLong
 
 class DetailActivity : AppCompatActivity() {
@@ -86,7 +83,7 @@ class DetailActivity : AppCompatActivity() {
 
     private fun fillMovieDetails(incomingEntry: MovieEntry) {
         binding.movieTitle.text = incomingEntry.title
-        binding.movieReleaseDate.text = DateFormat.format("MMM d, yyyy", incomingEntry.releaseDate)
+//        binding.movieReleaseDate.text = DateFormat.format("MMM d, yyyy", incomingEntry.releaseDate)
         binding.movieVoteAverage.text = "TMDb: ${incomingEntry.voteAverage}/10"
         setStarRating(incomingEntry.voteAverage)
         binding.moviePlotSynopsis.text = incomingEntry.overview
@@ -136,10 +133,10 @@ class DetailActivity : AppCompatActivity() {
         contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, incomingEntry!!.movie_id)
         contentValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, incomingEntry.overview)
         contentValues.put(MovieContract.MovieEntry.COLUMN_POSTERPATH, incomingEntry.posterPath)
-        contentValues.put(
-            MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
-            incomingEntry.releaseDate?.time
-        )
+//        contentValues.put(
+//            MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
+//            incomingEntry.releaseDate?.time
+//        )
         contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, incomingEntry.title)
         contentValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, incomingEntry.voteAverage)
         Log.v(
@@ -204,19 +201,13 @@ class DetailActivity : AppCompatActivity() {
         get() = mMovie.movie_id
 
     private fun loadReviewsData() {
-        FetchTask(ReviewEntry::class.java, this).execute()
+        val service=MoviesService.create()
+        runBlocking {  reviewAdapter.setReviewData(service.getReviews(movieId)) }
     }
 
     private fun loadTrailersData() {
-        FetchTask(TrailerEntry::class.java, this).execute()
-    }
-
-    fun setEntries(trailers: Array<TrailerEntry>?) {
-        trailerAdapter.setTrailerData(trailers)
-    }
-
-    fun setEntries(reviews: Array<ReviewEntry>?) {
-        reviewAdapter.setReviewData(reviews)
+        val service=MoviesService.create()
+        runBlocking {  trailerAdapter.setTrailerData(service.getTrailers(movieId)) }
     }
 
     companion object {

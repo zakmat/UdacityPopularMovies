@@ -17,25 +17,20 @@ import java.util.ArrayList
  * Created by mz on 2017-02-04.
  */
 class MovieAdapter(private val mClickHandler: MovieAdapterOnClickHandler) : RecyclerView.Adapter<ViewHolder>() {
-    var items: ArrayList<MovieEntry>? = null
+    var items: ArrayList<MovieEntry> = ArrayList()
         private set
 
     interface MovieAdapterOnClickHandler {
         fun OnClick(entry: MovieEntry)
     }
 
-    fun setMovieData(movieData: ArrayList<MovieEntry>?) {
+    fun setMovieData(movieData: List<MovieEntry>?) {
         Log.i(LOG_TAG, "before setMovieData there is $itemCount elements in a view")
-        when {
-            movieData == null -> {
-                items = null
-            }
-            items == null -> {
-                items = movieData
-            }
-            else -> {
-                items!!.addAll(movieData)
-            }
+        if (movieData == null) {
+            items.clear()
+        }
+        else {
+            items.addAll(movieData)
         }
         notifyDataSetChanged()
         Log.i(LOG_TAG, "after setMovieData there is $itemCount elements in a view")

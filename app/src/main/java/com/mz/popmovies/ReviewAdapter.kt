@@ -13,17 +13,11 @@ import java.util.*
  * Created by mz on 2017-02-04.
  */
 class ReviewAdapter : RecyclerView.Adapter<ReviewAdapter.ViewHolder>() {
-    private var mReviews: ArrayList<ReviewEntry>? = null
+    private var mReviews: ArrayList<ReviewEntry> = ArrayList()
     lateinit var binding: ReviewDetailsBinding
-    fun setReviewData(reviewData: Array<ReviewEntry>?) {
+    fun setReviewData(reviewData: List<ReviewEntry>) {
         Log.i(LOG_TAG, "before setReviewData there is $itemCount elements in a view")
-        if (reviewData == null) {
-            mReviews = null
-        } else if (mReviews == null) {
-            mReviews = ArrayList(reviewData.asList())
-        } else {
-            mReviews!!.addAll(reviewData.asList())
-        }
+        mReviews.addAll(reviewData)
         notifyDataSetChanged()
         Log.i(LOG_TAG, "after setReviewData there is $itemCount elements in a view")
     }
