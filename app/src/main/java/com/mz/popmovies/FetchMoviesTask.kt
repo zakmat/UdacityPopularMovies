@@ -13,6 +13,8 @@ import java.util.*
 /**
  * Created by mateusz.zak on 03.05.2017.
  */
+//TODO: this was responsible for retrieving favourite movies from offline storage.
+// Restore functionality using Room database
 class FetchMoviesTask(context: Context, private val mQueryType: String, private val mPage: String) : AsyncTaskLoader<List<MovieEntry>>(context) {
     private val LOG_TAG = FetchMoviesTask::class.java.simpleName
     override fun loadInBackground(): List<MovieEntry> {
