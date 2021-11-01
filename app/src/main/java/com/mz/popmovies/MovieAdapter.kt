@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.ListAdapter
+import coil.load
 import com.squareup.picasso.Picasso
 import com.mz.popmovies.data.MovieEntry
 import com.mz.popmovies.databinding.ThumbWithCaptionBinding
@@ -52,15 +53,11 @@ class MovieAdapter(private val mClickHandler: MovieAdapterOnClickHandler) : Recy
         private lateinit var entry: MovieEntry
 
         fun bind(position: Int) {
-            if (items == null) {
-                Log.d(LOG_TAG, "Called bind with null mMovieEntries")
-                return
-            }
-            entry = items!![position]
+            entry = items[position]
             val poster = buildPosterRequest(MEDIUM_SIZE, entry.posterPath)
-            binding.tvTitle.text = entry.title
-            Log.i(LOG_TAG, "bind movie: \"" + entry.title + "\"")
-            Picasso.get().load(poster).into(binding.ivThumbnail)
+            binding.tvTitle.text = "${entry.title}[$position]"
+            Log.i(LOG_TAG, "bind movie: $position \"" + entry.title + "\"")
+            binding.ivThumbnail.load(poster)
             binding.root.setOnClickListener{
                 Log.e(LOG_TAG, "Clicked on movie : ${entry.title}")
                 mClickHandler.OnClick(entry)
