@@ -1,11 +1,10 @@
 package com.mz.popmovies.data
 
 import android.os.Parcelable
-import android.os.Parcel
+import com.mz.popmovies.utilities.NetworkUtils
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.*
 
 /**
  * Created by mz on 2017-02-04.
@@ -23,21 +22,31 @@ data class MovieEntry(
     val releaseDate: String?,
     @SerialName("vote_average")
     val voteAverage: Double
-) : Parcelable
+) : Parcelable {
+    val thumbnail: String?
+        get() = if (posterPath != null) NetworkUtils.buildPosterRequest(
+            342,
+            posterPath
+        ).toString() else null
+}
 
 @Serializable
 data class Response<T>(
     val page: Int = 1,
     val results: List<T>
 )
+
 @Serializable
-data class TrailerEntry (
+data class TrailerEntry(
     @SerialName("id")
     private val trailer_id: String,
     val name: String,
     val key: String,
     private val site: String
-)
+) {
+    val thumbnail: String?
+        get() = if (key.isNotBlank()) NetworkUtils.buildYoutubeThumbnail(key).toString() else null
+}
 
 @Serializable
 data class ReviewEntry(

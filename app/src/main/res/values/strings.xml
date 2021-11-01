@@ -20,6 +20,7 @@
     <string name="action_settings">Settings</string>
     <string name="videos_label">Trailers</string>
     <string name="placeholder_trailer_thumbnail">Play a trailer!</string>
+    <string name="overview">Synopsis</string>
     <string-array name="queries">
         <item>@string/popular_value</item>
         <item>@string/top_rated_value</item>
