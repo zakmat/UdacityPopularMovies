@@ -22,8 +22,10 @@ class MainActivity : AppCompatActivity() {
             PopMoviesTheme {
                 MainScreen(
                     movies = viewModel.state.value.movies,
+                    isLoading = viewModel.state.value.isLoading,
                     onClick = { navigateToDetails(it) },
-                    onCategoryChanged = { viewModel.changeCategory(it) }
+                    onCategoryChanged = { viewModel.changeCategory(it) },
+                    onEndReached = { viewModel.getMoreMovies() }
                 )
             }
         }
@@ -35,30 +37,6 @@ class MainActivity : AppCompatActivity() {
 //            binding.rvPosters.layoutManager = GridLayoutManager(this, 2)
 //        }
         //TODO: favourite support
-        //TODO: allow scrolling as below
-//        binding.rvPosters.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                if (dy > 0) //check for scroll down
-//                {
-//                    val visibleItemCount = binding.rvPosters.layoutManager!!.childCount
-//                    val totalItemCount = binding.rvPosters.layoutManager!!.itemCount
-//                    val firstVisibleItem =
-//                        (binding.rvPosters.layoutManager as GridLayoutManager?)!!.findFirstVisibleItemPosition()
-//                    Log.v("...", "Total item count $totalItemCount $visibleItemCount")
-//                    if (binding.pbLoadingIndicator.visibility == View.INVISIBLE && visibleItemCount + firstVisibleItem >= totalItemCount) {
-//                        //Do pagination.. i.e. fetch new data
-//                        val nextPage = (totalItemCount / 20 + 1).toString()
-//                        Log.v(">>>", "Getting page number: $nextPage")
-//                        val selectedValue = binding.spinner.selectedItem.toString()
-//                        if (selectedValue == resources.getString(R.string.popular_value)) {
-//                            loadMoviesData(resources.getString(R.string.popular_label), nextPage)
-//                        } else if (selectedValue == resources.getString(R.string.top_rated_value)) {
-//                            loadMoviesData(resources.getString(R.string.top_rated_label), nextPage)
-//                        }
-//                    }
-//                }
-//            }
-//        })
     }
 
     fun navigateToDetails(entry: MovieEntry) {

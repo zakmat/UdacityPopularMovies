@@ -10,20 +10,29 @@ import com.mz.popmovies.data.remote.MoviesService
 import com.mz.popmovies.repository.Repository
 import kotlinx.coroutines.launch
 
+const val PAGE_SIZE = 20
 class MainViewModel : ViewModel() {
 
     private val repository = Repository(MoviesService.create())
-
     private val _state = mutableStateOf(LoadedMoviesState())
     val state: State<LoadedMoviesState> = _state
 
     data class LoadedMoviesState(
         val isLoading: Boolean = false,
         val category: String = "popular",
+        val page: Int = 1,
         val movies: List<MovieEntry> = emptyList()
     )
 
-    private fun nextPage() = _state.value.movies.size / 20 + 1
+    fun getMoreMovies() {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true, page = _state.value.page + 1)
+            _state.value = _state.value.copy(
+                isLoading = false,
+                movies = _state.value.movies + repository.fetchMovies(_state.value.category, _state.value.page)
+            )
+        }
+    }
 
     fun getMovies() {
         viewModelScope.launch {
@@ -31,13 +40,13 @@ class MainViewModel : ViewModel() {
                 _state.value = _state.value.copy(isLoading = true)
                 _state.value = _state.value.copy(
                     isLoading = false,
-                    movies = repository.fetchMovies(_state.value.category, nextPage())
+                    movies = repository.fetchMovies(_state.value.category, _state.value.page)
                 )
 
             } catch (e: Exception) {
                 Log.d(
-                    "MovieDetailViewModel",
-                    "Failed to load ${_state.value.category} movies (page: ${nextPage()})",
+                    "MainViewModel",
+                    "Failed to load ${_state.value.category} movies (page: ${_state.value.page})",
                     e
                 )
                 _state.value = _state.value.copy(false)
@@ -55,13 +64,14 @@ class MainViewModel : ViewModel() {
                 _state.value = _state.value.copy(
                     isLoading = false,
                     category = category,
+                    page = 1,
                     movies = repository.fetchMovies(category, 1)
                 )
 
             } catch (e: Exception) {
                 Log.d(
                     "MovieDetailViewModel",
-                    "Failed to load ${_state.value.category} movies (page: ${nextPage()})",
+                    "Failed to load ${_state.value.category} movies (page: ${_state.value.page})",
                     e
                 )
                 _state.value = _state.value.copy(false)

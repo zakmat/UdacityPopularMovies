@@ -1,12 +1,11 @@
 package com.mz.popmovies.ui
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -48,8 +47,10 @@ fun CategorySelection(
 //TODO: pass category as parameter
 fun MainScreen(
     movies: List<MovieEntry>,
+    isLoading: Boolean,
     onClick: (MovieEntry) -> Unit = {},
-    onCategoryChanged: (String) -> Unit = {}
+    onCategoryChanged: (String) -> Unit = {},
+    onEndReached: () -> Unit = {}
 ) {
     Scaffold(topBar = {
         TopAppBar(title = {
@@ -64,9 +65,16 @@ fun MainScreen(
         },
         backgroundColor=MaterialTheme.colors.primary)
     }) {
-        LazyVerticalGrid(cells = GridCells.Fixed(2)) {
-            items(movies) { movie ->
+        val listState = rememberLazyListState()
+        val rowSize = 2
+        if ((listState.firstVisibleItemIndex + 4) * rowSize > movies.size && !isLoading) {
+            Log.i("MainViewModel", "End is reached, get more movies")
+            onEndReached()
+        }
+        LazyVerticalGrid(cells = GridCells.Fixed(rowSize), state = listState) {
+            itemsIndexed(movies) { index, movie ->
                 Column(Modifier.clickable { onClick(movie) }) {
+                    Log.i("MainViewModel", "${movie.title} ${index}")
                     Thumbnail(url = movie.thumbnail, modifier = Modifier.aspectRatio(2f / 3f))
                     Text(movie.title, style = MaterialTheme.typography.caption)
                 }
@@ -81,6 +89,6 @@ fun MainScreen(
 fun MainScreenPreview() {
     val movies: List<MovieEntry> = emptyList()
     PopMoviesTheme {
-        MainScreen(movies)
+        MainScreen(movies, false)
     }
 }
