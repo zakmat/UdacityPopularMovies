@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.android.application'
     id 'kotlin-parcelize'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.30'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.31'
 }
 android {
     compileSdk 31
@@ -14,8 +14,7 @@ android {
 
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.0.3'
-        kotlinCompilerVersion '1.5.30'
+        kotlinCompilerExtensionVersion '1.0.4'
     }
 
     defaultConfig {
@@ -29,7 +28,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -38,7 +37,7 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = JavaVersion.VERSION_11
     }
     buildTypes.each {
         it.buildConfigField 'String', 'TMDB_API_TOKEN', MyTmdbApiToken
@@ -59,37 +58,34 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.test:core:1.4.0'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.4.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'androidx.preference:preference-ktx:1.1.1'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
     testImplementation 'junit:junit:4.13.2'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'io.ktor:ktor-client-android:1.6.4'
-    implementation 'io.ktor:ktor-client-serialization:1.6.4'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0'
-    implementation 'io.ktor:ktor-client-logging-jvm:1.6.4'
-    implementation("io.coil-kt:coil-compose:1.3.1")
+    implementation 'io.ktor:ktor-client-android:1.6.5'
+    implementation 'io.ktor:ktor-client-serialization:1.6.5'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1'
+    implementation 'io.ktor:ktor-client-logging-jvm:1.6.5'
+    implementation "io.coil-kt:coil-compose:1.3.1"
 
 
     // Integration with activities
-    implementation 'androidx.activity:activity-compose:1.3.1'
+    implementation 'androidx.activity:activity-compose:1.4.0'
     // Compose Material Design
-    implementation 'androidx.compose.material:material:1.0.4'
+    implementation 'androidx.compose.material:material:1.0.5'
     // Animations
-    implementation 'androidx.compose.animation:animation:1.0.4'
+    implementation 'androidx.compose.animation:animation:1.0.5'
     // Tooling support (Previews, etc.)
-    implementation 'androidx.compose.ui:ui-tooling:1.0.4'
+    implementation 'androidx.compose.ui:ui-tooling:1.0.5'
     // Integration with ViewModels
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-rc01'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0'
     // UI Tests
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.0.4'
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.0.5'
 
 }
 
