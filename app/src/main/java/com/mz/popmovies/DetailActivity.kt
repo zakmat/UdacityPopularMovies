@@ -1,6 +1,7 @@
 package com.mz.popmovies
 
 import android.content.ContentValues
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,6 +13,7 @@ import com.mz.popmovies.data.MovieEntry
 import com.mz.popmovies.ui.DetailScreen
 import com.mz.popmovies.ui.MovieViewModel
 import com.mz.popmovies.ui.theme.PopMoviesTheme
+import com.mz.popmovies.utilities.NetworkUtils
 
 class DetailActivity : AppCompatActivity() {
     private val viewModel by viewModels<MovieViewModel>()
@@ -19,7 +21,7 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             PopMoviesTheme {
-                DetailScreen(viewModel.state.value, onBack = { finish() })
+                DetailScreen(viewModel.state.value, onBack = { finish() }, onClick = { key-> openYoutubeTrailer(key) })
             }
         }
         if (intent.hasExtra("MovieEntry")) {
@@ -57,19 +59,16 @@ class DetailActivity : AppCompatActivity() {
     }
 
     //TODO: onClick open youtube trailer
-//    fun openYoutubeTrailer() {
-//        val adapterPosition = adapterPosition
-//        Log.e(LOG_TAG, "Clicked on position : $adapterPosition")
-//        val trailer = trailers[adapterPosition]
-//        val youtubeMovie = NetworkUtils.buildYoutubeRequest(trailer.key)
-//        val viewTrailerIntent = Intent(Intent.ACTION_VIEW, youtubeMovie)
-//        if (viewTrailerIntent.resolveActivity(super.itemView.context.packageManager) != null) {
-//            super.itemView.context.startActivity(viewTrailerIntent)
-//        }
-//        else {
-//            Log.w(LOG_TAG, "Youtube activity not resolved")
-//        }
-//    }
+    private fun openYoutubeTrailer(key:String) {
+        val youtubeMovie = NetworkUtils.buildYoutubeRequest(key)
+        val viewTrailerIntent = Intent(Intent.ACTION_VIEW, youtubeMovie)
+        if (viewTrailerIntent.resolveActivity(this.baseContext.packageManager) != null) {
+            baseContext.startActivity(viewTrailerIntent)
+        }
+        else {
+            Log.w(LOG_TAG, "Youtube activity not resolved")
+        }
+    }
 
     companion object {
         private const val LOG_TAG = "DetailActivity"

@@ -1,6 +1,7 @@
 package com.mz.popmovies.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -43,11 +44,10 @@ fun StarRating(rating: Double) {
             }
         }
     }
-
 }
 
 @Composable
-fun DetailScreen(state: MovieViewModel.MovieDetailState, onBack: () -> Unit = {}) {
+fun DetailScreen(state: MovieViewModel.MovieDetailState, onBack: () -> Unit = {}, onClick: (String) -> Unit = {}) {
     if (state.isLoading) {
         Dialog(onDismissRequest = { onBack() }) {
             CircularProgressIndicator()
@@ -86,7 +86,7 @@ fun DetailScreen(state: MovieViewModel.MovieDetailState, onBack: () -> Unit = {}
                 LazyRow {
                     items(items = trailers, itemContent = { trailer ->
                         Column(
-                            Modifier.size(140.dp, 100.dp),
+                            Modifier.size(140.dp, 100.dp).clickable { onClick(trailer.key) },
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Thumbnail(trailer.thumbnail)
