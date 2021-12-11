@@ -8,7 +8,7 @@ import com.mz.popmovies.R
  * Created by mateusz.zak on 27.03.2017.
  */
 class SettingsFragment : PreferenceFragmentCompat() {
-    override fun onCreatePreferences(savedInstanceState: Bundle, rootKey: String) {
-        addPreferencesFromResource(R.xml.pref_popmovies)
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.pref_popmovies, rootKey)
     }
 }

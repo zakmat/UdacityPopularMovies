@@ -25,7 +25,8 @@ class MainActivity : AppCompatActivity() {
                     isLoading = viewModel.state.value.isLoading,
                     onClick = { navigateToDetails(it) },
                     onCategoryChanged = { viewModel.changeCategory(it) },
-                    onEndReached = { viewModel.getMoreMovies() }
+                    onEndReached = { viewModel.getMoreMovies() },
+                    onSettings = { navigateToSettings()}
                 )
             }
         }
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         //TODO: favourite support
     }
 
-    fun navigateToDetails(entry: MovieEntry) {
+    private fun navigateToDetails(entry: MovieEntry) {
         val context: Context = this@MainActivity
         val destinationClass: Class<*> = DetailActivity::class.java
         val intent = Intent(context, destinationClass)
@@ -41,19 +42,10 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    //TODO: bind options menu to access preferences
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        if (id == R.id.action_settings) {
-            val startSettingsActivity = Intent(this, SettingsActivity::class.java)
-            startActivity(startSettingsActivity)
-            return true
-        }
-        return super.onOptionsItemSelected(item)
+    private fun navigateToSettings() {
+        val context: Context = this@MainActivity
+        val destinationClass: Class<*> = SettingsActivity::class.java
+        val startSettingsActivity = Intent(context, destinationClass)
+        startActivity(startSettingsActivity)
     }
 }
