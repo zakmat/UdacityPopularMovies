@@ -1,16 +1,14 @@
 plugins {
-    id ("org.jetbrains.kotlin.android")
-    id ("com.android.application")
-    id ("kotlin-parcelize")
-    id "org.jetbrains.kotlin.plugin.serialization" version "1.5.31"
+    id("com.android.application")
+    kotlin("android")
+    id("kotlin-parcelize")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.5.31"
 }
 android {
     compileSdk = 31
     buildToolsVersion = "30.0.3"
     buildFeatures {
         compose = true
-        viewBinding = true
-
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.0.4"
@@ -22,13 +20,17 @@ android {
         targetSdk = 30
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
-        release {
-            minifyEnabled = true
+        getByName("release") {
+            isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+        }
+        forEach {
+            val MyTmdbApiToken: String by project
+            it.buildConfigField("String", "TMDB_API_TOKEN", MyTmdbApiToken)
         }
     }
     compileOptions {
@@ -36,35 +38,36 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
-    }
-    buildTypes.each {
-        it.buildConfigField "String", "TMDB_API_TOKEN", MyTmdbApiToken
+        jvmTarget = "11"
     }
 
     packagingOptions {
-        resources.excludes.add("META-INF/DEPENDENCIES")
-        exclude("META-INF/LICENSE")
-        exclude("META-INF/LICENSE.txt")
-        exclude("META-INF/license.txt")
-        exclude("META-INF/NOTICE")
-        exclude("META-INF/NOTICE.txt")
-        exclude("META-INF/notice.txt")
-        exclude("META-INF/ASL2.0")
-        exclude("META-INF/*.kotlin_module")
+        resources.excludes.addAll(
+            listOf(
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.txt",
+                "META-INF/license.txt",
+                "META-INF/NOTICE",
+                "META-INF/NOTICE.txt",
+                "META-INF/notice.txt",
+                "META-INF/ASL2.0",
+                "META-INF/*.kotlin_module"
+            )
+        )
     }
 }
 
 dependencies {
-    implementation fileTree(include: ["*.jar"], dir: "libs")
+    implementation(fileTree("lib") { include("*.jar") })
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.test:core:1.4.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0", {
-        exclude(group: "com.android.support", module: "support-annotations")
-    })
-    implementation ("androidx.appcompat:appcompat:1.3.1")
-    implementation ("androidx.preference:preference-ktx:1.1.1")
-    testImplementation ("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0") {
+        exclude(group = "com.android.support", module = "support-annotations")
+    }
+    implementation("androidx.appcompat:appcompat:1.3.1")
+    implementation("androidx.preference:preference-ktx:1.1.1")
+    testImplementation("junit:junit:4.13.2")
     implementation("com.google.android.material:material:1.4.0")
     implementation("io.ktor:ktor-client-android:1.6.5")
     implementation("io.ktor:ktor-client-serialization:1.6.5")
