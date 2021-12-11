@@ -10,11 +10,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.mz.popmovies.data.MovieEntry
 import com.mz.popmovies.ui.MainScreen
+import com.mz.popmovies.ui.MovieListViewModel
 import com.mz.popmovies.ui.theme.PopMoviesTheme
-import com.mz.popmovies.ui.MainViewModel
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel by viewModels<MovieListViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +61,5 @@ class MainActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    companion object {
-        private val LOG_TAG = MainActivity::class.java.simpleName
     }
 }

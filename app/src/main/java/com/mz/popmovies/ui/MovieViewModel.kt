@@ -1,24 +1,18 @@
 package com.mz.popmovies.ui
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mz.popmovies.DetailActivity
-import com.mz.popmovies.data.MovieContract
 import com.mz.popmovies.data.MovieEntry
 import com.mz.popmovies.data.ReviewEntry
 import com.mz.popmovies.data.TrailerEntry
 import com.mz.popmovies.data.remote.MoviesService
 import com.mz.popmovies.repository.Repository
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class MovieViewModel : ViewModel() {
-    companion object {
-        private const val LOG_TAG: String = "DetailViewModel"
-    }
     //TODO: use Service Locator or DI to handle dependencies instead of creating here
     private val repository = Repository(MoviesService.create())
 
@@ -37,7 +31,7 @@ class MovieViewModel : ViewModel() {
                 )
 
             } catch (e: Exception) {
-                Log.d("MovieDetailViewModel", "Failed to load movie id: $movieId", e)
+                Timber.d(e, "Failed to load movie id: $movieId")
                 _state.value = _state.value.copy(false)
             }
         }

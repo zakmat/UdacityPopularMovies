@@ -1,6 +1,5 @@
 package com.mz.popmovies.ui
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,9 +8,11 @@ import com.mz.popmovies.data.MovieEntry
 import com.mz.popmovies.data.remote.MoviesService
 import com.mz.popmovies.repository.Repository
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 const val PAGE_SIZE = 20
-class MainViewModel : ViewModel() {
+
+class MovieListViewModel : ViewModel() {
 
     private val repository = Repository(MoviesService.create())
     private val _state = mutableStateOf(LoadedMoviesState())
@@ -29,7 +30,10 @@ class MainViewModel : ViewModel() {
             _state.value = _state.value.copy(isLoading = true, page = _state.value.page + 1)
             _state.value = _state.value.copy(
                 isLoading = false,
-                movies = _state.value.movies + repository.fetchMovies(_state.value.category, _state.value.page)
+                movies = _state.value.movies + repository.fetchMovies(
+                    _state.value.category,
+                    _state.value.page
+                )
             )
         }
     }
@@ -44,10 +48,9 @@ class MainViewModel : ViewModel() {
                 )
 
             } catch (e: Exception) {
-                Log.d(
-                    "MainViewModel",
-                    "Failed to load ${_state.value.category} movies (page: ${_state.value.page})",
-                    e
+                Timber.d(
+                    e,
+                    "Failed to load ${_state.value.category} movies (page: ${_state.value.page})"
                 )
                 _state.value = _state.value.copy(false)
             }
@@ -69,10 +72,9 @@ class MainViewModel : ViewModel() {
                 )
 
             } catch (e: Exception) {
-                Log.d(
-                    "MovieDetailViewModel",
-                    "Failed to load ${_state.value.category} movies (page: ${_state.value.page})",
-                    e
+                Timber.d(
+                    e,
+                    "Failed to load ${_state.value.category} movies (page: ${_state.value.page})"
                 )
                 _state.value = _state.value.copy(false)
             }

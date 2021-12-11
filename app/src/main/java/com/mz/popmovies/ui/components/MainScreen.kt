@@ -1,11 +1,12 @@
 package com.mz.popmovies.ui
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -18,6 +19,7 @@ import com.mz.popmovies.R
 import com.mz.popmovies.data.MovieEntry
 import com.mz.popmovies.ui.components.Thumbnail
 import com.mz.popmovies.ui.theme.PopMoviesTheme
+import timber.log.Timber
 
 @Composable
 fun CategorySelection(
@@ -53,28 +55,30 @@ fun MainScreen(
     onEndReached: () -> Unit = {}
 ) {
     Scaffold(topBar = {
-        TopAppBar(title = {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(stringResource(R.string.app_name))
-                CategorySelection(
-                    currentCategory = "Popular",
-                    mapOf("Popular" to "popular", "Top rated" to "top_rated"),
-                    onCategoryChanged = { onCategoryChanged(it) }
-                )
-            }
-        },
-        backgroundColor=MaterialTheme.colors.primary)
+        TopAppBar(
+            title = {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(stringResource(R.string.app_name))
+                    CategorySelection(
+                        currentCategory = "Popular",
+                        mapOf("Popular" to "popular", "Top rated" to "top_rated"),
+                        onCategoryChanged = { onCategoryChanged(it) }
+                    )
+                }
+            },
+            backgroundColor = MaterialTheme.colors.primary
+        )
     }) {
         val listState = rememberLazyListState()
         val rowSize = 2
         if ((listState.firstVisibleItemIndex + 4) * rowSize > movies.size && !isLoading) {
-            Log.i("MainViewModel", "End is reached, get more movies")
+            Timber.i("End is reached, get more movies")
             onEndReached()
         }
         LazyVerticalGrid(cells = GridCells.Fixed(rowSize), state = listState) {
             itemsIndexed(movies) { index, movie ->
                 Column(Modifier.clickable { onClick(movie) }) {
-                    Log.i("MainViewModel", "${movie.title} ${index}")
+                    Timber.i("${movie.title} ${index}")
                     Thumbnail(url = movie.thumbnail, modifier = Modifier.aspectRatio(2f / 3f))
                     Text(movie.title, style = MaterialTheme.typography.caption)
                 }

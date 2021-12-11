@@ -5,8 +5,7 @@ import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
-import android.util.Log
-import com.mz.popmovies.data.MovieProvider
+import timber.log.Timber
 
 /**
  * Created by mateusz.zak on 08.04.2017.
@@ -20,10 +19,10 @@ class MovieProvider : ContentProvider() {
 
     override fun bulkInsert(uri: Uri, values: Array<ContentValues>): Int {
         val db = mOpenHelper!!.writableDatabase
-        Log.d(LOG_TAG, "bulkInsert invoked")
+        Timber.d("bulkInsert invoked")
         return when (sUriMatcher.match(uri)) {
             CODE_MOVIE, CODE_FAVOURITE_MOVIES -> {
-                Log.d(LOG_TAG, "... for CODE_MOVIE")
+                Timber.d("... for CODE_MOVIE")
                 db.beginTransaction()
                 var rowsInserted = 0
                 try {
@@ -154,7 +153,6 @@ class MovieProvider : ContentProvider() {
         private const val CODE_VIDEOS = 102
         private const val CODE_REVIEWS = 103
         private val sUriMatcher = buildUriMatcher()
-        private val LOG_TAG = MovieProvider::class.java.simpleName
         private fun buildUriMatcher(): UriMatcher {
             val matcher = UriMatcher(UriMatcher.NO_MATCH)
             val authority = MovieContract.CONTENT_AUTHORITY
