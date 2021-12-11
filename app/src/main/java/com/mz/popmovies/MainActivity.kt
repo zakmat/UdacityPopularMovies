@@ -30,12 +30,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         viewModel.getMovies()
-        //TODO: orientation should change grid size 2 vs 4
-//        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            binding.rvPosters.layoutManager = GridLayoutManager(this, 4)
-//        } else {
-//            binding.rvPosters.layoutManager = GridLayoutManager(this, 2)
-//        }
         //TODO: favourite support
     }
 

@@ -1,5 +1,6 @@
 package com.mz.popmovies.ui
 
+import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -70,7 +72,8 @@ fun MainScreen(
         )
     }) {
         val listState = rememberLazyListState()
-        val rowSize = 2
+        val rowSize =
+            if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) 4 else 2
         if ((listState.firstVisibleItemIndex + 4) * rowSize > movies.size && !isLoading) {
             Timber.i("End is reached, get more movies")
             onEndReached()
