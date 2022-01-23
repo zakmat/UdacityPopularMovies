@@ -12,10 +12,7 @@ import com.mz.popmovies.repository.Repository
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class MovieViewModel : ViewModel() {
-    //TODO: use Service Locator or DI to handle dependencies instead of creating here
-    private val repository = Repository(MoviesService.create())
-
+class MovieViewModel(val repository: Repository) : ViewModel() {
     private val _state = mutableStateOf(MovieDetailState())
     val state: State<MovieDetailState> = _state
 
@@ -85,7 +82,7 @@ class MovieViewModel : ViewModel() {
 //    }
 
     data class MovieDetailState(
-        val isLoading: Boolean = false,
+        val isLoading: Boolean = true,
         val movie: MovieEntry? = null,
         val trailers: List<TrailerEntry> = emptyList(),
         val reviews: List<ReviewEntry> = emptyList()

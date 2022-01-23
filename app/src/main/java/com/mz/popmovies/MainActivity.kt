@@ -11,12 +11,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mz.popmovies.data.MovieEntry
 import com.mz.popmovies.ui.MainScreen
 import com.mz.popmovies.ui.MovieListViewModel
+import com.mz.popmovies.ui.ViewModelFactory
 import com.mz.popmovies.ui.theme.PopMoviesTheme
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel by viewModels<MovieListViewModel>()
+    private val viewModel: MovieListViewModel by viewModels {
+        Injection.provideViewModelFactory(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Timber.plant(Timber.DebugTree())
         super.onCreate(savedInstanceState)
         setContent {
             PopMoviesTheme {

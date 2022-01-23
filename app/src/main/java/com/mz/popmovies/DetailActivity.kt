@@ -16,7 +16,9 @@ import com.mz.popmovies.utilities.NetworkUtils
 import timber.log.Timber
 
 class DetailActivity : AppCompatActivity() {
-    private val viewModel by viewModels<MovieViewModel>()
+    // Investigate: Simple by viewModels does fails to re-launch Job inside getMovie
+    private val viewModel : MovieViewModel by lazy { Injection.provideViewModelFactory(this).create(MovieViewModel::class.java) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

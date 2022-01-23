@@ -23,6 +23,8 @@ class Repository(val api: MoviesService) {
     }
 
     suspend fun fetchMovies(query: String, page: Int): List<MovieEntry> {
-        return api.getMovies(query, page)
+        val fetchedMovies = api.getMovies(query, page)
+        movies.addAll(fetchedMovies)
+        return fetchedMovies
     }
 }

@@ -12,9 +12,7 @@ import timber.log.Timber
 
 const val PAGE_SIZE = 20
 
-class MovieListViewModel : ViewModel() {
-
-    private val repository = Repository(MoviesService.create())
+class MovieListViewModel(val repository: Repository) : ViewModel() {
     private val _state = mutableStateOf(LoadedMoviesState())
     val state: State<LoadedMoviesState> = _state
 
